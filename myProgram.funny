@@ -1,0 +1,3 @@
+{ myVar, param ->
+    myVar="a string";
+}
