@@ -2,9 +2,10 @@ package tokenizer;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
+
 //TODO: comments
-//TODO: numbers
-//TODO: if/while... construct
+//TODO: while/do/od/whilenot, true/false/nil... construct
 public class Tokenizer{
     private final Reader reader;
     private int currentChar;
@@ -62,7 +63,11 @@ public class Tokenizer{
             case '"':
                 //case string
                 return checkString();
+            //TODO: refactor this
             case 'p':
+            case 'i':
+            case 'f':
+                //var or if or ifnot
                 //var or print or println
                 return checkPrint();
         }
@@ -71,14 +76,28 @@ public class Tokenizer{
         if(Character.isAlphabetic(currentChar)){
             return checkId();
         }
+        if(Character.isDigit(currentChar)){
+            return checkDigit();
+        }
         return new Token(TokenType.UNKNOWN);
+    }
+
+    //TODO: lost precision
+    private Token checkDigit() throws IOException {
+        StringBuilder numberBuilder=new StringBuilder();
+        while(!isSymbol(currentChar)){
+            numberBuilder.append((char)currentChar);
+            reader.mark(1);
+            currentChar=reader.read();
+        }
+        reader.reset();
+        return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString()));
     }
 
     private Token checkId() throws IOException {
         StringBuilder wordBuilder=new StringBuilder();
         while(!Character.isWhitespace(currentChar) &&
-                currentChar!=',' &&
-                currentChar!='='){
+                !isSymbol(currentChar)){
             wordBuilder.append((char)currentChar);
             reader.mark(1);
             currentChar=reader.read();
@@ -99,8 +118,7 @@ public class Tokenizer{
     protected Token checkPrint() throws IOException {
         StringBuilder wordBuilder=new StringBuilder();
         while(!Character.isWhitespace(currentChar) &&
-                currentChar!='(' &&
-                currentChar!='='){
+                !isSymbol(currentChar)){
             reader.mark(1);
             wordBuilder.append((char)currentChar);
             currentChar=reader.read();
@@ -112,6 +130,15 @@ public class Tokenizer{
         }
         if(wordBuilder.toString().equals("println")){
             return new Token(TokenType.PRINTLN);
+        }
+        if(wordBuilder.toString().equals("if")){
+            return new Token(TokenType.IF);
+        }
+        if(wordBuilder.toString().equals("ifnot")){
+            return new Token(TokenType.IFNOT);
+        }
+        if(wordBuilder.toString().equals("fi")){
+            return new Token(TokenType.FI);
         }
         return new Token(TokenType.ID, wordBuilder.toString());
     }
@@ -204,5 +231,23 @@ public class Tokenizer{
             skipSpaces();
         }
         reader.reset();
+    }
+
+    private boolean isSymbol(int symbol){
+        switch(symbol){
+            case '+':
+            case '-':
+            case '/':
+            case '%':
+            case '*':
+            case '=':
+            case ';':
+            case ',':
+            case '(':
+            case ')':
+                return true;
+            default:
+                return false;
+        }
     }
 }

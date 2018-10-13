@@ -1,10 +1,12 @@
 package tokenizer;
 
+import java.math.BigDecimal;
+
 public class Token{
 
     private final TokenType type;
     //only for number
-    private int value;
+    private BigDecimal value;
     //only var name or string
     private String stringValue;
 
@@ -12,7 +14,7 @@ public class Token{
         this.type=type;
     }
 
-    public Token(TokenType type, int value){
+    public Token(TokenType type, BigDecimal value){
         this.type=type;
         this.value=value;
     }
@@ -26,7 +28,7 @@ public class Token{
         return type;
     }
 
-    public int getValue(){
+    public BigDecimal getValue(){
         return value;
     }
 
