@@ -36,24 +36,25 @@ public class Tokenizer{
                 return new Token(TokenType.COMMA);
             case '!':
                 //2 cases ! or !=
-                return not();
+                return checkNot();
             case '-':
                 //3 possible cases - or -= or ->
-                return minus();
+                return checkMinus();
             case '+':
                 //also 2 cases + or +=
-                return plus();
+                return checkPlus();
             case '=':
                 //could be = or ==
-                return equal();
+                return checkEqual();
             case '/':
-                return div();
+                //could start a comment
+                return checkDiv();
             case '*':
-                return star();
+                return checkStar();
             case '&':
-                return and();
+                return checkAnd();
             case '|':
-                return or();
+                return checkOr();
             case '<':
                 return checkLess();
             case '>':
@@ -63,19 +64,11 @@ public class Tokenizer{
             case '"':
                 //case string
                 return checkString();
-            //TODO: refactor this
-            case 'p':
-            case 'i':
-            case 'f':
-                //var or if or ifnot
-                //var or print or println
-                return checkPrint();
         }
-        //could be a string
-        //constructor var name or number
         if(Character.isAlphabetic(currentChar)){
-            return checkId();
+            return checkPrint();
         }
+
         if(Character.isDigit(currentChar)){
             return checkDigit();
         }
@@ -85,25 +78,14 @@ public class Tokenizer{
     //TODO: lost precision
     private Token checkDigit() throws IOException {
         StringBuilder numberBuilder=new StringBuilder();
-        while(!isSymbol(currentChar)){
+        while(!isSymbol(currentChar) &&
+                !Character.isWhitespace(currentChar)){
             numberBuilder.append((char)currentChar);
             reader.mark(1);
             currentChar=reader.read();
         }
         reader.reset();
         return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString()));
-    }
-
-    private Token checkId() throws IOException {
-        StringBuilder wordBuilder=new StringBuilder();
-        while(!Character.isWhitespace(currentChar) &&
-                !isSymbol(currentChar)){
-            wordBuilder.append((char)currentChar);
-            reader.mark(1);
-            currentChar=reader.read();
-        }
-        reader.reset();
-        return new Token(TokenType.ID, wordBuilder.toString());
     }
 
     private Token checkString() throws IOException {
@@ -115,7 +97,7 @@ public class Tokenizer{
         return new Token(TokenType.STRING, wordBuilder.toString());
     }
 
-    protected Token checkPrint() throws IOException {
+    private Token checkPrint() throws IOException {
         StringBuilder wordBuilder=new StringBuilder();
         while(!Character.isWhitespace(currentChar) &&
                 !isSymbol(currentChar)){
@@ -140,6 +122,33 @@ public class Tokenizer{
         if(wordBuilder.toString().equals("fi")){
             return new Token(TokenType.FI);
         }
+        if(wordBuilder.toString().equals("then")){
+            return new Token(TokenType.THEN);
+        }
+        if(wordBuilder.toString().equals("else")){
+            return new Token(TokenType.ELSE);
+        }
+        if(wordBuilder.toString().equals("while")){
+            return new Token(TokenType.WHILE);
+        }
+        if(wordBuilder.toString().equals("whilenot")){
+            return new Token(TokenType.WHILENOT);
+        }
+        if(wordBuilder.toString().equals("do")){
+            return new Token(TokenType.DO);
+        }
+        if(wordBuilder.toString().equals("od")){
+            return new Token(TokenType.OD);
+        }
+        if(wordBuilder.toString().equals("nil")){
+            return new Token(TokenType.NIL);
+        }
+        if(wordBuilder.toString().equals("false")){
+            return new Token(TokenType.FALSE);
+        }
+        if(wordBuilder.toString().equals("true")){
+            return new Token(TokenType.TRUE);
+        }
         return new Token(TokenType.ID, wordBuilder.toString());
     }
 
@@ -159,7 +168,7 @@ public class Tokenizer{
         return new Token(TokenType.LESS);
     }
 
-    private Token equal() throws IOException {
+    private Token checkEqual() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='=') return new Token(TokenType.COMPARISON);
@@ -167,7 +176,7 @@ public class Tokenizer{
         return new Token(TokenType.EQUALS);
     }
 
-    private Token not() throws IOException {
+    private Token checkNot() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='=') return new Token(TokenType.DIFFERENCE);
@@ -175,7 +184,7 @@ public class Tokenizer{
         return new Token(TokenType.NOT);
     }
 
-    private Token star() throws IOException {
+    private Token checkStar() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='=') return new Token(TokenType.STAR);
@@ -183,15 +192,33 @@ public class Tokenizer{
         return new Token(TokenType.STAR);
     }
 
-    private Token div() throws IOException {
+    private Token checkDiv() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
-        if(currentChar=='=') return new Token(TokenType.DIVISION);
+        if(currentChar=='=') return new Token(TokenType.DIVISION_EQUALS);
+        if(currentChar=='*'){
+            checkComment();
+        }
         reader.reset();
         return new Token(TokenType.DIVISION);
     }
 
-    private Token and() throws IOException {
+    public void checkComment() throws IOException {
+        //keeps 2 char
+        int numClose=0;
+        StringBuilder commentBuilder=new StringBuilder();
+        reader.mark(1);
+        while(!commentBuilder.toString().equals("*/") &&
+                numClose!=0
+                ){
+            currentChar=reader.read();
+            System.out.println(currentChar);
+            commentBuilder.append((char)currentChar);
+        }
+        reader.reset();
+    }
+
+    private Token checkAnd() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='&') return new Token(TokenType.AND);
@@ -199,7 +226,7 @@ public class Tokenizer{
         return new Token(TokenType.UNKNOWN);
     }
 
-    private Token or() throws IOException {
+    private Token checkOr() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='|') return new Token(TokenType.OR);
@@ -207,7 +234,7 @@ public class Tokenizer{
         return new Token(TokenType.UNKNOWN);
     }
 
-    private Token plus() throws IOException {
+    private Token checkPlus() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='=') return new Token(TokenType.PLUS_EQUALS);
@@ -215,7 +242,7 @@ public class Tokenizer{
         return new Token(TokenType.PLUS);
     }
 
-    private Token minus() throws IOException {
+    private Token checkMinus() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='>') return new Token(TokenType.ARROW);
