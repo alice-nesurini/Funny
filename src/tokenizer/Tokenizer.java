@@ -5,7 +5,6 @@ import java.io.Reader;
 import java.math.BigDecimal;
 
 //TODO: comments
-//TODO: while/do/od/whilenot, true/false/nil... construct
 public class Tokenizer{
     private final Reader reader;
     private int currentChar;
@@ -16,6 +15,8 @@ public class Tokenizer{
 
     public Token next() throws IOException {
         skipSpaces();
+        checkComment();
+
         currentChar=reader.read();
         switch(currentChar){
             case '{':
@@ -47,7 +48,7 @@ public class Tokenizer{
                 //could be = or ==
                 return checkEqual();
             case '/':
-                //could start a comment
+                //comment checked before
                 return checkDiv();
             case '*':
                 return checkStar();
@@ -93,7 +94,6 @@ public class Tokenizer{
         while((currentChar=reader.read())!='"'){
             wordBuilder.append((char)currentChar);
         }
-
         return new Token(TokenType.STRING, wordBuilder.toString());
     }
 
@@ -196,24 +196,39 @@ public class Tokenizer{
         reader.mark(1);
         currentChar=reader.read();
         if(currentChar=='=') return new Token(TokenType.DIVISION_EQUALS);
-        if(currentChar=='*'){
-            checkComment();
-        }
         reader.reset();
         return new Token(TokenType.DIVISION);
     }
 
-    public void checkComment() throws IOException {
-        //keeps 2 char
-        int numClose=0;
-        StringBuilder commentBuilder=new StringBuilder();
+    //TODO: refactor this...
+    //TODO: comment inside comment
+    private void checkComment() throws IOException {
         reader.mark(1);
-        while(!commentBuilder.toString().equals("*/") &&
-                numClose!=0
-                ){
-            currentChar=reader.read();
-            System.out.println(currentChar);
-            commentBuilder.append((char)currentChar);
+        if((currentChar=reader.read())=='/'){
+            reader.mark(1);
+            if((currentChar=reader.read())=='*'){
+                //got a comment!
+                int numClose=1;
+                StringBuilder commentBuilder=new StringBuilder();
+                reader.mark(1);
+                while(!commentBuilder.toString().equals("*/") &&
+                        numClose!=0){
+                    //if(commentBuilder.toString().contains("/*")) numClose++;
+                    if(commentBuilder.toString().contains("*/")){
+                        commentBuilder=new StringBuilder();
+                        System.out.println("Num */ = "+numClose);
+                        numClose--;
+                    }
+                    currentChar=reader.read();
+                    System.out.print((char)currentChar);
+                    commentBuilder.append((char)currentChar);
+                }
+                skipSpaces();
+                System.out.print("last char: "+(int)currentChar);
+            }
+            else{
+                reader.reset();
+            }
         }
         reader.reset();
     }

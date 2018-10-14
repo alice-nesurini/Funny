@@ -265,6 +265,7 @@ public class TokenTest{
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
         assertEquals("fib", runnerToken.getStringValue());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.NUM, runnerToken.getType());
         assertEquals(new BigDecimal(10000), runnerToken.getValue());
@@ -273,12 +274,5 @@ public class TokenTest{
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
-    }
-
-    @Test
-    public void testComment() throws IOException {
-        final Tokenizer tokenizer=new Tokenizer(new StringReader("" +
-                "/*comment /* comment inside */ */"));
-        tokenizer.checkComment();
     }
 }
