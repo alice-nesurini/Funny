@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 
 //TODO: comments
+//TODO: MODULE missing
 public class Tokenizer{
     private final Reader reader;
     private int currentChar;
@@ -14,8 +15,8 @@ public class Tokenizer{
     }
 
     public Token next() throws IOException {
-        skipSpaces();
-        checkComment();
+        skipSpacesAndComment();
+        //checkComment();
 
         currentChar=reader.read();
         switch(currentChar){
@@ -187,7 +188,7 @@ public class Tokenizer{
     private Token checkStar() throws IOException {
         reader.mark(1);
         currentChar=reader.read();
-        if(currentChar=='=') return new Token(TokenType.STAR);
+        if(currentChar=='=') return new Token(TokenType.STAR_EQUALS);
         reader.reset();
         return new Token(TokenType.STAR);
     }
@@ -203,34 +204,18 @@ public class Tokenizer{
     //TODO: refactor this...
     //TODO: comment inside comment
     private void checkComment() throws IOException {
-        reader.mark(1);
-        if((currentChar=reader.read())=='/'){
-            reader.mark(1);
-            if((currentChar=reader.read())=='*'){
-                //got a comment!
-                int numClose=1;
-                StringBuilder commentBuilder=new StringBuilder();
-                reader.mark(1);
-                while(!commentBuilder.toString().equals("*/") &&
-                        numClose!=0){
-                    //if(commentBuilder.toString().contains("/*")) numClose++;
-                    if(commentBuilder.toString().contains("*/")){
-                        commentBuilder=new StringBuilder();
-                        System.out.println("Num */ = "+numClose);
-                        numClose--;
-                    }
-                    currentChar=reader.read();
-                    System.out.print((char)currentChar);
-                    commentBuilder.append((char)currentChar);
-                }
-                skipSpaces();
-                System.out.print("last char: "+(int)currentChar);
-            }
-            else{
-                reader.reset();
+        StringBuilder commentBuilder=new StringBuilder();
+        int numClose=2;
+        while(!commentBuilder.toString().contains("*/") &&
+                numClose!=0){
+            currentChar=reader.read();
+            commentBuilder.append((char)currentChar);
+            if(commentBuilder.toString().contains("*/")){
+                System.out.println(commentBuilder.toString());
+                numClose--;
+                commentBuilder=new StringBuilder();
             }
         }
-        reader.reset();
     }
 
     private Token checkAnd() throws IOException {
@@ -266,11 +251,20 @@ public class Tokenizer{
         return new Token(TokenType.MINUS);
     }
 
-    private void skipSpaces() throws IOException {
-        reader.mark(1);
+    private void skipSpacesAndComment() throws IOException {
+        reader.mark(2);
         currentChar=reader.read();
         if(Character.isWhitespace(currentChar)) {
-            skipSpaces();
+            skipSpacesAndComment();
+        }
+        if(currentChar=='/'){
+            //commento?
+            currentChar=reader.read();
+            if(currentChar=='*'){
+                //si
+                System.out.println("comment");
+            }
+            reader.reset();
         }
         reader.reset();
     }

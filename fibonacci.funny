@@ -1,5 +1,6 @@
-/* /*
+/* /* /*
  * Fibonacci sequence*/
+ */
  */
 {fib ->
     fib = {(n) fib0, fib1, fib ->
