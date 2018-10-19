@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 
-//TODO: comments
-//TODO: MODULE missing
 public class Tokenizer{
     private final Reader reader;
     private int currentChar;
@@ -14,9 +12,10 @@ public class Tokenizer{
         this.reader=reader;
     }
 
-    public Token next() throws IOException {
-        skipSpacesAndComment();
-        //checkComment();
+    public Token next() throws IOException, TokenizerException {
+        skipSpaces();
+        skipComment();
+        skipInline();
 
         currentChar=reader.read();
         switch(currentChar){
@@ -36,6 +35,8 @@ public class Tokenizer{
                 return new Token(TokenType.SEMICOLON);
             case ',':
                 return new Token(TokenType.COMMA);
+            case '%':
+                return checkModule();
             case '!':
                 //2 cases ! or !=
                 return checkNot();
@@ -75,6 +76,29 @@ public class Tokenizer{
             return checkDigit();
         }
         return new Token(TokenType.UNKNOWN);
+    }
+
+    private void skipInline() throws IOException, TokenizerException {
+        //inline comment
+        reader.mark(2);
+        currentChar=reader.read();
+        if(currentChar=='/'){
+            currentChar=reader.read();
+            if(currentChar=='/'){
+                while((currentChar=reader.read())!='\n') {
+                    reader.mark(1);
+                }
+            }
+            else{
+                reader.reset();
+            }
+        }
+        else{
+            reader.reset();
+        }
+        reader.reset();
+        skipSpaces();
+        skipComment();
     }
 
     //TODO: lost precision
@@ -201,21 +225,45 @@ public class Tokenizer{
         return new Token(TokenType.DIVISION);
     }
 
+    private Token checkModule() throws IOException {
+        reader.mark(1);
+        currentChar=reader.read();
+        if(currentChar=='=') return new Token(TokenType.MODULE_EQUALS);
+        reader.reset();
+        return new Token(TokenType.MODULE);
+    }
+
     //TODO: refactor this...
-    //TODO: comment inside comment
-    private void checkComment() throws IOException {
+    private void skipComment() throws IOException, TokenizerException {
         StringBuilder commentBuilder=new StringBuilder();
-        int numClose=2;
-        while(!commentBuilder.toString().contains("*/") &&
-                numClose!=0){
-            currentChar=reader.read();
-            commentBuilder.append((char)currentChar);
-            if(commentBuilder.toString().contains("*/")){
-                System.out.println(commentBuilder.toString());
-                numClose--;
-                commentBuilder=new StringBuilder();
+        int numberOfComment=0;
+        reader.mark(2);
+        if(reader.read()=='/' && reader.read()=='*'){
+            //there is a comment
+            numberOfComment++;
+            while(numberOfComment!=0){
+                currentChar=reader.read();
+                if(commentBuilder.toString().contains("*/")){
+                    numberOfComment--;
+                    commentBuilder=new StringBuilder();
+                }
+                else if(commentBuilder.toString().contains("/*")){
+                    numberOfComment++;
+                    commentBuilder=new StringBuilder();
+                }
+                //case the comment is never closed
+                //ONLY case when the tokenizer throws an exception
+                if(currentChar==-1){
+                    throw new TokenizerException("A comment was opened and never closed");
+                }
+                commentBuilder.append((char)currentChar);
             }
         }
+        else{
+            reader.reset();
+        }
+        skipSpaces();
+        //check spaces after this
     }
 
     private Token checkAnd() throws IOException {
@@ -251,20 +299,11 @@ public class Tokenizer{
         return new Token(TokenType.MINUS);
     }
 
-    private void skipSpacesAndComment() throws IOException {
-        reader.mark(2);
+    private void skipSpaces() throws IOException {
+        reader.mark(1);
         currentChar=reader.read();
         if(Character.isWhitespace(currentChar)) {
-            skipSpacesAndComment();
-        }
-        if(currentChar=='/'){
-            //commento?
-            currentChar=reader.read();
-            if(currentChar=='*'){
-                //si
-                System.out.println("comment");
-            }
-            reader.reset();
+            skipSpaces();
         }
         reader.reset();
     }

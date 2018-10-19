@@ -2,8 +2,12 @@
  * Fibonacci sequence*/
  */
  */
+ //inline comment
+
+
 {fib ->
     fib = {(n) fib0, fib1, fib ->
+    /* commento */
         fib0 = 1;
         fib1 = 0;
         while n > 0 do
@@ -12,7 +16,9 @@
             fib1 = fib;
             n -= 1;
         od;
+        /* non da problemi */
         fib1
+         //inline comment
     };
 
     println(fib(10000));

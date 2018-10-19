@@ -6,11 +6,12 @@ import java.io.*;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TokenTest{
 
     @Test
-    public void testNextPrint() throws IOException {
+    public void testNextPrint() throws IOException, TokenizerException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("\n { ->\n" +
                 "\tprint(\"Hello, world!\\n\");\n" +
                 "\tprint(\"Hi!\", \"\\n\");\n" +
@@ -44,17 +45,17 @@ public class TokenTest{
     }
 
     @Test
-    public void testNextParam() throws IOException {
+    public void testNextParam() throws IOException, TokenizerException {
         //final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("myProgram.funny")));
-        final Tokenizer tokenizer=new Tokenizer(new StringReader("{ myVar, param ->\n" +
-                "    myVar=\"a string\";\n" +
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{ whileing, param ->\n" +
+                "    whileing=\"a string\";\n" +
                 "}"));
         Token runnerToken;
 
         assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("myVar", runnerToken.getStringValue());
+        assertEquals("whileing", runnerToken.getStringValue());
         assertEquals(TokenType.COMMA, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
@@ -63,7 +64,7 @@ public class TokenTest{
 
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("myVar", runnerToken.getStringValue());
+        assertEquals("whileing", runnerToken.getStringValue());
         assertEquals(TokenType.EQUALS, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.STRING, runnerToken.getType());
@@ -74,7 +75,7 @@ public class TokenTest{
     }
 
     @Test
-    public void testNextNumber() throws IOException {
+    public void testNextNumber() throws IOException, TokenizerException {
         final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("myProgram.funny")));
 
         Token runnerToken;
@@ -98,7 +99,6 @@ public class TokenTest{
         assertEquals(TokenType.EQUALS, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.NUM, runnerToken.getType());
-        // TODO: failing assertion BigDecimal 2.999999...!=2.3
         // assertEquals(new BigDecimal(2.3), runnerToken.getValue());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
@@ -108,7 +108,6 @@ public class TokenTest{
         assertEquals(TokenType.EQUALS, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.NUM, runnerToken.getType());
-        // TODO: failing assertion BigDecimal 7.509999...!=5.21
         // assertEquals(new BigDecimal(7.51), runnerToken.getValue());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
@@ -149,7 +148,7 @@ public class TokenTest{
     }
 
     @Test
-    public void testNextLamdba() throws IOException {
+    public void testNextLamdba() throws IOException, TokenizerException {
         final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("fibonacci.funny")));
 
         Token runnerToken;
@@ -274,5 +273,17 @@ public class TokenTest{
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+    }
+
+    @Test
+    public void testCommentException() throws IOException, TokenizerException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{ ->\n" +
+                "    //inline\n" +
+                "    /* error\n" +
+                "}"));
+        //Expectiing excpetion from tokenizer
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertThrows(TokenizerException.class, tokenizer::next);
     }
 }
