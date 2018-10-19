@@ -41,6 +41,7 @@ public class Tokenizer{
                 //2 cases ! or !=
                 return checkNot();
             case '-':
+                //case could be NUMBER
                 //3 possible cases - or -= or ->
                 return checkMinus();
             case '+':
@@ -73,7 +74,7 @@ public class Tokenizer{
         }
 
         if(Character.isDigit(currentChar)){
-            return checkDigit();
+            return checkDigit(false);
         }
         return new Token(TokenType.UNKNOWN);
     }
@@ -102,11 +103,22 @@ public class Tokenizer{
     }
 
     //TODO: lost precision
-    private Token checkDigit() throws IOException {
+    //TODO: minus cases
+    private Token checkDigit(boolean negate) throws IOException {
         StringBuilder numberBuilder=new StringBuilder();
-        while(!isSymbol(currentChar) &&
-                !Character.isWhitespace(currentChar)){
+        if(negate){
+            numberBuilder.append("-");
+        }
+
+        boolean checkExp=false;
+        boolean flagExp=false;
+        while((flagExp || !isSymbol(currentChar)) && !Character.isWhitespace(currentChar)){
             numberBuilder.append((char)currentChar);
+            flagExp=false;
+            if(!checkExp && numberBuilder.toString().contains("e")) {
+                flagExp=true;
+                checkExp=true;
+            }
             reader.mark(1);
             currentChar=reader.read();
         }
@@ -263,7 +275,6 @@ public class Tokenizer{
             reader.reset();
         }
         skipSpaces();
-        //check spaces after this
     }
 
     private Token checkAnd() throws IOException {
@@ -295,6 +306,7 @@ public class Tokenizer{
         currentChar=reader.read();
         if(currentChar=='>') return new Token(TokenType.ARROW);
         if(currentChar=='=') return new Token(TokenType.MINUS_EQUALS);
+        if(Character.isDigit(currentChar)) return checkDigit(true);
         reader.reset();
         return new Token(TokenType.MINUS);
     }

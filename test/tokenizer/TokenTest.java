@@ -286,4 +286,34 @@ public class TokenTest{
         assertEquals(TokenType.ARROW, tokenizer.next().getType());
         assertThrows(TokenizerException.class, tokenizer::next);
     }
+
+    @Test
+    public void testNumberFormat() throws IOException, TokenizerException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{ myVar ->\n" +
+                "    myVar = -1;\n" +
+                "    myVar = 1e-30;\n" +
+                "}"));
+        Token runnerToken;
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("myVar", runnerToken.getStringValue());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+
+        assertEquals("myVar", tokenizer.next().getStringValue());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.NUM, runnerToken.getType());
+        assertEquals(new BigDecimal(-1), runnerToken.getValue());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals("myVar", tokenizer.next().getStringValue());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.NUM, runnerToken.getType());
+        //assertEquals(new BigDecimal(1e-30), runnerToken.getValue());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+    }
 }
