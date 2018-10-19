@@ -40,6 +40,8 @@ public class Tokenizer{
             case '!':
                 //2 cases ! or !=
                 return checkNot();
+            case '.':
+                return checkDigit(false);
             case '-':
                 //case could be NUMBER
                 //3 possible cases - or -= or ->
@@ -93,7 +95,6 @@ public class Tokenizer{
         skipComment();
     }
 
-    //TODO: lost precision
     //TODO: refactor this...
     private Token checkDigit(boolean negate) throws IOException {
         StringBuilder numberBuilder=new StringBuilder();
@@ -114,6 +115,7 @@ public class Tokenizer{
             currentChar=reader.read();
         }
         reader.reset();
+        //TODO: setScale
         return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString())/*.setScale(2, BigDecimal.ROUND_HALF_UP)*/);
     }
 

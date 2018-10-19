@@ -292,6 +292,7 @@ public class TokenTest{
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{ myVar ->\n" +
                 "    myVar = -1;\n" +
                 "    myVar = 1e-30;\n" +
+                "    myVar = .7;\n" +
                 "}"));
         Token runnerToken;
         assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
@@ -312,6 +313,13 @@ public class TokenTest{
         runnerToken=tokenizer.next();
         assertEquals(TokenType.NUM, runnerToken.getType());
         //assertEquals(new BigDecimal(1e-30), runnerToken.getValue());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals("myVar", tokenizer.next().getStringValue());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.NUM, runnerToken.getType());
+        //assertEquals(new BigDecimal(0.7), runnerToken.getValue());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
