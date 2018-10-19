@@ -69,8 +69,7 @@ public class Tokenizer{
                 //case string
                 return checkString();
         }
-        //special cases of variable names start with _ or $
-        if(Character.isAlphabetic(currentChar) || currentChar=='_' || currentChar=='$'){
+        if(Character.isJavaIdentifierStart(currentChar)){
             return checkPrint();
         }
 
@@ -81,22 +80,13 @@ public class Tokenizer{
     }
 
     private void skipInline() throws IOException, TokenizerException {
-        //inline comment
         reader.mark(2);
-        currentChar=reader.read();
-        if(currentChar=='/'){
-            currentChar=reader.read();
-            if(currentChar=='/'){
+        if((currentChar=reader.read())=='/'){
+            if((currentChar=reader.read())=='/'){
                 while((currentChar=reader.read())!='\n') {
                     reader.mark(1);
                 }
             }
-            else{
-                reader.reset();
-            }
-        }
-        else{
-            reader.reset();
         }
         reader.reset();
         skipSpaces();
@@ -104,7 +94,7 @@ public class Tokenizer{
     }
 
     //TODO: lost precision
-    //TODO: minus cases
+    //TODO: refactor this...
     private Token checkDigit(boolean negate) throws IOException {
         StringBuilder numberBuilder=new StringBuilder();
         if(negate){
@@ -113,7 +103,7 @@ public class Tokenizer{
 
         boolean checkExp=false;
         boolean flagExp=false;
-        while((flagExp || !isSymbol(currentChar)) && !Character.isWhitespace(currentChar)){
+        while((flagExp || isSymbol(currentChar)) && !Character.isWhitespace(currentChar)){
             numberBuilder.append((char)currentChar);
             flagExp=false;
             if(!checkExp && numberBuilder.toString().contains("e")) {
@@ -124,7 +114,7 @@ public class Tokenizer{
             currentChar=reader.read();
         }
         reader.reset();
-        return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString()));
+        return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString())/*.setScale(2, BigDecimal.ROUND_HALF_UP)*/);
     }
 
     private Token checkString() throws IOException {
@@ -137,7 +127,7 @@ public class Tokenizer{
 
     private Token checkPrint() throws IOException {
         StringBuilder wordBuilder=new StringBuilder();
-        while(!Character.isWhitespace(currentChar) && !isSymbol(currentChar)){
+        while(Character.isJavaIdentifierPart(currentChar)){
             reader.mark(1);
             wordBuilder.append((char)currentChar);
             currentChar=reader.read();
@@ -245,7 +235,6 @@ public class Tokenizer{
         return new Token(TokenType.MODULE);
     }
 
-    //TODO: refactor this...
     private void skipComment() throws IOException, TokenizerException {
         StringBuilder commentBuilder=new StringBuilder();
         int numberOfComment=0;
@@ -254,17 +243,20 @@ public class Tokenizer{
             //there is a comment
             numberOfComment++;
             while(numberOfComment!=0){
-                currentChar=reader.read();
+                //found close comment
                 if(commentBuilder.toString().contains("*/")){
                     numberOfComment--;
                     commentBuilder=new StringBuilder();
                 }
+                //found open comment
                 else if(commentBuilder.toString().contains("/*")){
                     numberOfComment++;
                     commentBuilder=new StringBuilder();
                 }
+
                 //case the comment is never closed
-                //ONLY case when the tokenizer throws an exception
+                //**ONLY** case when the tokenizer throws an exception
+                currentChar=reader.read();
                 if(currentChar==-1){
                     throw new TokenizerException("A comment was opened and never closed");
                 }
@@ -334,9 +326,9 @@ public class Tokenizer{
             case ')':
             case '{':
             case '}':
-                return true;
-            default:
                 return false;
+            default:
+                return true;
         }
     }
 }

@@ -451,4 +451,47 @@ public class TokenTest{
 
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
+
+    @Test
+    public void testUnicode() throws IOException, TokenizerException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{ ->\n" +
+                "\tprint(\"Hello, world!\\n\");\n" +
+                "\tprint(\"Hi!\", \"\\n\");\n" +
+                "\tprintln(\"你好\");\n" +
+                "}"));
+
+        Token runnerToken;
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+
+        assertEquals(TokenType.PRINT, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.STRING, runnerToken.getType());
+        assertEquals("Hello, world!\\n", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals(TokenType.PRINT, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.STRING, runnerToken.getType());
+        assertEquals("Hi!", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.STRING, runnerToken.getType());
+        assertEquals("\\n", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals(TokenType.PRINTLN, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.STRING, runnerToken.getType());
+        assertEquals("你好", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+    }
 }
