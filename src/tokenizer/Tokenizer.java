@@ -69,7 +69,8 @@ public class Tokenizer{
                 //case string
                 return checkString();
         }
-        if(Character.isAlphabetic(currentChar)){
+        //special cases of variable names start with _ or $
+        if(Character.isAlphabetic(currentChar) || currentChar=='_' || currentChar=='$'){
             return checkPrint();
         }
 
@@ -136,8 +137,7 @@ public class Tokenizer{
 
     private Token checkPrint() throws IOException {
         StringBuilder wordBuilder=new StringBuilder();
-        while(!Character.isWhitespace(currentChar) &&
-                !isSymbol(currentChar)){
+        while(!Character.isWhitespace(currentChar) && !isSymbol(currentChar)){
             reader.mark(1);
             wordBuilder.append((char)currentChar);
             currentChar=reader.read();
@@ -332,6 +332,8 @@ public class Tokenizer{
             case ',':
             case '(':
             case ')':
+            case '{':
+            case '}':
                 return true;
             default:
                 return false;

@@ -316,4 +316,139 @@ public class TokenTest{
 
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
+
+    @Test
+    public void testLambdaCode() throws IOException, TokenizerException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{_true, _false, $if ->\n" +
+                "    _true = {(t, f) -> t};\n" +
+                "    _false = {(t, f) -> f};\n" +
+                "    $if = {(c, t, e) -> c(t, e)()};\n" +
+                "    \n" +
+                "    println($if(_false, {-> while true do {} od}, {-> \"False\"}))\n" +
+                "}"));
+        Token runnerToken;
+
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("_true", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("_false", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("$if", runnerToken.getStringValue());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("_true", runnerToken.getStringValue());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("t", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("f", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("t", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("_false", runnerToken.getStringValue());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("t", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("f", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("f", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("$if", runnerToken.getStringValue());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("c", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("t", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("e", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("c", runnerToken.getStringValue());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("t", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("e", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals(TokenType.PRINTLN, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("$if", runnerToken.getStringValue());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.ID, runnerToken.getType());
+        assertEquals("_false", runnerToken.getStringValue());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.WHILE, tokenizer.next().getType());
+        assertEquals(TokenType.TRUE, tokenizer.next().getType());
+        assertEquals(TokenType.DO, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OD, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        runnerToken=tokenizer.next();
+        assertEquals(TokenType.STRING, runnerToken.getType());
+        assertEquals("False", runnerToken.getStringValue());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+    }
 }
