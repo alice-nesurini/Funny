@@ -502,4 +502,18 @@ public class TokenTest{
 
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
+
+    @Test
+    public void testStringNeverEnds() throws IOException, TokenizerException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{ ->\n" +
+                "\tprint(\"No end);\n" +
+                "}"));
+
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+
+        assertEquals(TokenType.PRINT, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertThrows(TokenizerException.class, tokenizer::next);
+    }
 }

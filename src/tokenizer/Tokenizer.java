@@ -13,9 +13,7 @@ public class Tokenizer{
     }
 
     public Token next() throws IOException, TokenizerException {
-        skipSpaces();
-        skipComment();
-        skipInline();
+        skipGarbage();
 
         currentChar=reader.read();
         switch(currentChar){
@@ -81,6 +79,12 @@ public class Tokenizer{
         return new Token(TokenType.UNKNOWN);
     }
 
+    private void skipGarbage() throws IOException, TokenizerException {
+        skipSpaces();
+        skipComment();
+        skipInline();
+    }
+
     private void skipInline() throws IOException, TokenizerException {
         reader.mark(2);
         if((currentChar=reader.read())=='/'){
@@ -95,7 +99,6 @@ public class Tokenizer{
         skipComment();
     }
 
-    //TODO: refactor this...
     private Token checkDigit(boolean negate) throws IOException {
         StringBuilder numberBuilder=new StringBuilder();
         if(negate){
@@ -119,10 +122,13 @@ public class Tokenizer{
         return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString())/*.setScale(2, BigDecimal.ROUND_HALF_UP)*/);
     }
 
-    private Token checkString() throws IOException {
+    private Token checkString() throws IOException, TokenizerException {
         StringBuilder wordBuilder=new StringBuilder();
         while((currentChar=reader.read())!='"'){
             wordBuilder.append((char)currentChar);
+            if(currentChar==-1){
+                throw new TokenizerException("[string] A string was never closed");
+            }
         }
         return new Token(TokenType.STRING, wordBuilder.toString());
     }
@@ -260,7 +266,7 @@ public class Tokenizer{
                 //**ONLY** case when the tokenizer throws an exception
                 currentChar=reader.read();
                 if(currentChar==-1){
-                    throw new TokenizerException("A comment was opened and never closed");
+                    throw new TokenizerException("[comment] A comment was opened and never closed");
                 }
                 commentBuilder.append((char)currentChar);
             }
