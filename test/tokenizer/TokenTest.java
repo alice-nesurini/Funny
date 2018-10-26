@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TokenTest{
-
     @Test
     public void testNextPrint() throws IOException, TokenizerException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("\n { ->\n" +
@@ -515,5 +514,28 @@ public class TokenTest{
         assertEquals(TokenType.PRINT, tokenizer.next().getType());
         assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
         assertThrows(TokenizerException.class, tokenizer::next);
+    }
+
+    @Test
+    public void testPrev() throws IOException, TokenizerException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{ ->\n" +
+                "}"));
+
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        tokenizer.prev();
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+    }
+
+    @Test
+    public void testExtendedPrev() throws IOException, TokenizerException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{ ->\n" +
+                "}"));
+
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        tokenizer.prev();
+        assertThrows(TokenizerException.class, tokenizer::prev);
     }
 }

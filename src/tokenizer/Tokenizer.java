@@ -5,6 +5,8 @@ import java.io.Reader;
 import java.math.BigDecimal;
 
 public class Tokenizer{
+    private boolean backtrack=false;
+    private Token currentToken;
     private final Reader reader;
     private int currentChar;
 
@@ -13,6 +15,16 @@ public class Tokenizer{
     }
 
     public Token next() throws IOException, TokenizerException {
+        if(backtrack){
+            backtrack=false;
+            return currentToken;
+        }
+        currentToken=internalNext();
+        return currentToken;
+    }
+
+    private Token internalNext() throws IOException, TokenizerException {
+
         skipGarbage();
 
         currentChar=reader.read();
@@ -70,7 +82,7 @@ public class Tokenizer{
                 return checkString();
         }
         if(Character.isJavaIdentifierStart(currentChar)){
-            return checkPrint();
+            return checkKeyword();
         }
 
         if(Character.isDigit(currentChar)){
@@ -118,8 +130,7 @@ public class Tokenizer{
             currentChar=reader.read();
         }
         reader.reset();
-        //TODO: setScale
-        return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString())/*.setScale(2, BigDecimal.ROUND_HALF_UP)*/);
+        return new Token(TokenType.NUM, new BigDecimal(numberBuilder.toString()));
     }
 
     private Token checkString() throws IOException, TokenizerException {
@@ -133,7 +144,7 @@ public class Tokenizer{
         return new Token(TokenType.STRING, wordBuilder.toString());
     }
 
-    private Token checkPrint() throws IOException {
+    private Token checkKeyword() throws IOException {
         StringBuilder wordBuilder=new StringBuilder();
         while(Character.isJavaIdentifierPart(currentChar)){
             reader.mark(1);
@@ -338,5 +349,12 @@ public class Tokenizer{
             default:
                 return true;
         }
+    }
+
+    public void prev() throws TokenizerException {
+        if(backtrack){
+            throw new TokenizerException("[prev] can only backtrack one token");
+        }
+        backtrack=true;
     }
 }
