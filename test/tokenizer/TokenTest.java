@@ -98,7 +98,7 @@ public class TokenTest{
         assertEquals(TokenType.EQUALS, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.NUM, runnerToken.getType());
-        // assertEquals(new BigDecimal(2.3), runnerToken.getValue());
+        assertEquals(new BigDecimal("2.3"), runnerToken.getValue());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
         runnerToken=tokenizer.next();
@@ -537,5 +537,11 @@ public class TokenTest{
         assertEquals(TokenType.ARROW, tokenizer.next().getType());
         tokenizer.prev();
         assertThrows(TokenizerException.class, tokenizer::prev);
+    }
+
+    @Test
+    public void completeTesting() throws IOException, TokenizerException {
+        final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("complete.funny")));
+        while(tokenizer.next().getType()!=TokenType.EOS){}
     }
 }

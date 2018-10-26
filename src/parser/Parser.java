@@ -9,6 +9,7 @@ import java.io.IOException;
 
 public class Parser {
 
+
     private final Tokenizer tokenizer;
     private Token currentToken;
     private Token pastToken;
