@@ -10,8 +10,20 @@ import java.io.StringReader;
 public class ParserTest {
 
     @Test
-    public void testParam() throws IOException, TokenizerException, ParserException {
+    public void testOneSequence() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=2}"));
+        new Parser(tokenizer).parse();
+    }
+
+    @Test
+    public void testOptLocal() throws IOException, TokenizerException, ParserException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{myVar param id ->}"));
-        Parser parser=new Parser(tokenizer);
+        new Parser(tokenizer).parse();
+    }
+
+    @Test
+    public void testOptParam() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) ->}"));
+        new Parser(tokenizer).parse();
     }
 }
