@@ -50,6 +50,5 @@ class LookupTableTest {
         assertTrue(internalLookupTable.contains("x"));
         assertFalse(internalLookupTable.contains("notAVariable"));
         assertEquals(2, internalLookupTable.recursionLevel());
-
     }
 }
