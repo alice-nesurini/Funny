@@ -1,4 +1,6 @@
 package structure;
 
-public class Expr {
+public abstract class Expr {
+
+    public abstract <T> T getValue();
 }
