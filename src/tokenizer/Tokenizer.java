@@ -345,6 +345,8 @@ public class Tokenizer{
             case ')':
             case '{':
             case '}':
+            case '<':
+            case '>':
                 return false;
             default:
                 return true;

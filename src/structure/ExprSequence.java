@@ -2,7 +2,7 @@ package structure;
 
 import java.util.List;
 
-public class ExprSequence extends Expr{
+public class ExprSequence extends  Expr{
     private final List<Expr> exprs;
 
     public ExprSequence(List<Expr> exprs) {

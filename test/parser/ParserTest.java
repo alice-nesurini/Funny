@@ -3,7 +3,6 @@ package parser;
 import org.junit.jupiter.api.Test;
 import structure.Expr;
 import structure.ExprSequence;
-import structure.NumExpr;
 import tokenizer.Tokenizer;
 import tokenizer.TokenizerException;
 
@@ -18,8 +17,8 @@ public class ParserTest {
     @Test
     public void testNumericSequence() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=2}"));
-        Expr expr=new Parser(tokenizer).parse();
-        assertEquals(1, ((ExprSequence)expr).size());
+        ExprSequence expr=new Parser(tokenizer).parse();
+        assertEquals(1, (expr).size());
 
         final Tokenizer tokenizerThrows=new Tokenizer(new StringReader("{(myVar param id other) -> notExistent=2}"));
         Parser parser=new Parser(tokenizerThrows);
@@ -52,8 +51,8 @@ public class ParserTest {
     @Test
     public void testBooleanAssignment() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true}"));
-        Expr expr=new Parser(tokenizer).parse();
-        assertEquals(1, ((ExprSequence)expr).size());
+        ExprSequence expr=new Parser(tokenizer).parse();
+        assertEquals(1, (expr).size());
 
         final Tokenizer tokenizerThrows=new Tokenizer(new StringReader("{(myVar param id other) -> notExistent=false}"));
         Parser parser=new Parser(tokenizerThrows);
@@ -70,5 +69,30 @@ public class ParserTest {
         seq=(ExprSequence)parser.parse();
         assertEquals(3, (seq).size());
         seq.print();
+    }
+
+    @Test
+    public void testLogicalOr() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true||false||false}"));
+        ExprSequence expr = new Parser(tokenizer).parse();
+        System.out.println(expr.getExprs().get(0).getValue().toString());
+        assertEquals(1, (expr).size());
+    }
+
+    @Test
+    public void testComparison() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true==false;" +
+                "param=5<1;"+
+                "other=5+4*8/2;"+
+                "id=!true;"+
+                "id=\"Mia Stringa\";"+
+                "if(id==true) then other=5; fi;"+
+                "if id==true then other=5; fi;"+
+                "while id==true do other=5; od;"+
+                "while (id==true) do other=5; od;"+
+                "print(\"Hello\")"+
+                "}"));
+        ExprSequence expr = new Parser(tokenizer).parse();
+        expr.getExprs();
     }
 }
