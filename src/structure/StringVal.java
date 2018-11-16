@@ -8,5 +8,12 @@ public class StringVal extends Val {
         this.string = string;
     }
 
+    @Override
+    public StringVal checkString(){
+        return this;
+    }
 
+    public String getValue() {
+        return string;
+    }
 }

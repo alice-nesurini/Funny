@@ -1,5 +1,6 @@
 package structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExprList {
@@ -11,6 +12,9 @@ public class ExprList {
     }
 
     List<Val> eval(Env env) {
-        return null;
+        // TODO
+        List<Val> list=new ArrayList<>();
+        exprs.forEach(e->list.add(e.eval(env)));
+        return list;
     }
 }

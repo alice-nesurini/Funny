@@ -10,8 +10,9 @@ import java.io.StringReader;
 
 public class InterpreterTest {
     @Test
-    public void simpleAssignTest() throws TokenizerException, ParserException, IOException {
-        final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=2}"));
-        SeqExpr expr=new Parser(tokenizer).parse();
+    public void simplePrintTest() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{->print(\"Hello\n\");print(\"Other Hello\")}"));
+        SeqExpr expr = new Parser(tokenizer).parse();
+        expr.eval(null);
     }
 }

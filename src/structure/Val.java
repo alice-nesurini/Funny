@@ -2,7 +2,12 @@ package structure;
 
 public abstract class Val extends Expr {
     @Override
-    Val eval(Env env) {
+    public Val eval(Env env) {
         return this;
+    }
+
+    public StringVal checkString() throws Exception {
+        //TODO: modify the exception
+        throw new Exception("Not a string");
     }
 }

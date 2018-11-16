@@ -230,19 +230,24 @@ public class Parser {
         return new PrintExpr(args(lookupTable));
     }
 
-    private SeqExpr args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
+    private ExprList args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
         SeqExpr exprSeq=null;
+        // added
+        next();
+        // TODO: maybe wrong?
         checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
         if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
             exprSeq=sequence(lookupTable);
+            System.out.println("args "+currentToken.getType());
             while(check(TokenType.COMMA)){
                 next();
-                // TODO: expr sequnce append?
-                // seq.add(sequence(lookupTable));
+                // TODO: expr sequence append? more string!!
+                // missing case more string
+                exprSeq.add(sequence(lookupTable));
             }
             checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "Expected )");
         }
-        return exprSeq;
+        return new ExprList(exprSeq.getExprs());
     }
 
     private WhileExpr loop(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {

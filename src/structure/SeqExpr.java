@@ -19,7 +19,13 @@ public class SeqExpr extends Expr{
     }
 
     @Override
-    Val eval(Env env) {
+    public Val eval(Env env) {
+        exprs.forEach(e->e.eval(env));
         return null;
+    }
+
+    // added
+    public void add(SeqExpr sequence) {
+        exprs.add(sequence);
     }
 }

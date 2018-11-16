@@ -76,7 +76,7 @@ public class ParserTest {
         assertEquals(1, (expr).size());
     }
 
-    @Disabled
+    //@Disabled
     @Test
     public void testComparison() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true==false;" +
@@ -88,7 +88,8 @@ public class ParserTest {
                 "if id==true then other=5; fi;"+
                 "while id==true do other=5; od;"+
                 "while (id==true) do other=5; od;"+
-                "print(\"Hello\")"+
+                "print(\"Hello\");"+
+                "print(\"Super\", \"Hello\")"+
                 "}"));
         SeqExpr expr = new Parser(tokenizer).parse();
         expr.getExprs();
