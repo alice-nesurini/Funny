@@ -2,14 +2,14 @@ package structure;
 
 public class PrintExpr extends Expr{
 
-    private final ExprSequence sequence;
+    private final SeqExpr sequence;
 
-    public PrintExpr(ExprSequence sequence) {
+    public PrintExpr(SeqExpr sequence) {
         this.sequence = sequence;
     }
 
     @Override
-    public <T> T getValue() {
+    Val eval(Env env) {
         return null;
     }
 }

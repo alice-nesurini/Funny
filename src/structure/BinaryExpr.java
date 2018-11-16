@@ -15,11 +15,7 @@ public class BinaryExpr extends Expr{
     }
 
     @Override
-    public Boolean getValue() {
-        /*switch(operator){
-            case OR:
-                return ((BoolExpr)left).getValue()||((BoolExpr)right).getValue();
-        }*/
+    Val eval(Env env) {
         return null;
     }
 }

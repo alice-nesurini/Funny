@@ -2,10 +2,10 @@ package structure;
 
 import java.util.List;
 
-public class ExprSequence extends  Expr{
+public class SeqExpr extends Expr{
     private final List<Expr> exprs;
 
-    public ExprSequence(List<Expr> exprs) {
+    public SeqExpr(List<Expr> exprs) {
         this.exprs=exprs;
     }
 
@@ -18,15 +18,8 @@ public class ExprSequence extends  Expr{
         return exprs;
     }
 
-    public void print(){
-        for(Expr e:getExprs()){
-            //TODO: explicit cast just num implemented
-            System.out.println("Expr : "+e.getValue());
-        }
-    }
-
     @Override
-    public <T> T getValue() {
+    Val eval(Env env) {
         return null;
     }
 }

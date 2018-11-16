@@ -1,6 +1,9 @@
 package parser;
 
 import structure.*;
+import structure.BoolVal;
+import structure.NumVal;
+import structure.StringVal;
 import tokenizer.Token;
 import tokenizer.TokenType;
 import tokenizer.Tokenizer;
@@ -20,35 +23,35 @@ public class Parser {
         this.tokenizer=tokenizer;
     }
 
-    public ExprSequence parse() throws IOException, TokenizerException, ParserException {
+    public SeqExpr parse() throws IOException, TokenizerException, ParserException {
         next();
         return program();
     }
 
-    private ExprSequence program() throws IOException, TokenizerException, ParserException {
-        ExprSequence expr=function();
+    private SeqExpr program() throws IOException, TokenizerException, ParserException {
+        SeqExpr expr=function();
         check(TokenType.EOS, "no valid end of stream found");
         return expr;
     }
 
-    private ExprSequence function() throws IOException, TokenizerException, ParserException {
+    private SeqExpr function() throws IOException, TokenizerException, ParserException {
         checkAndNext(TokenType.OPEN_CURLY_BRACKET, "open '{' error");
         List<String> params=optParams();
         List<String> locals=optLocals();
         params.addAll(locals);
 
         LookupTable lookupTable=new LookupTable(params, null);
-        ExprSequence expr=optSequence(lookupTable);
+        SeqExpr expr=optSequence(lookupTable);
         checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error");
         return expr;
     }
 
-    private ExprSequence optSequence(LookupTable lookupTable) throws ParserException, IOException, TokenizerException {
+    private SeqExpr optSequence(LookupTable lookupTable) throws ParserException, IOException, TokenizerException {
         checkAndNext(TokenType.ARROW, "starting ARROW (->) was expected");
         return sequence(lookupTable);
     }
 
-    private ExprSequence sequence(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private SeqExpr sequence(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         List<Expr> exprs=new ArrayList<>();
 
         //case with one assignment (no semicolon end)
@@ -65,7 +68,7 @@ public class Parser {
                 exprs.add(expr);
             }
         }
-        return exprs.size()==0?null:new ExprSequence(exprs);
+        return exprs.size()==0?null:new SeqExpr(exprs);
     }
 
     private Expr optAssignment(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
@@ -227,8 +230,8 @@ public class Parser {
         return new PrintExpr(args(lookupTable));
     }
 
-    private ExprSequence args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
-        ExprSequence exprSeq=null;
+    private SeqExpr args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
+        SeqExpr exprSeq=null;
         checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
         if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
             exprSeq=sequence(lookupTable);
@@ -242,7 +245,7 @@ public class Parser {
         return exprSeq;
     }
 
-    private LoopExpr loop(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private WhileExpr loop(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         boolean invertedLogic=check(TokenType.WHILENOT);
         boolean mustClose=false;
         next();
@@ -260,7 +263,7 @@ public class Parser {
             next();
             doActions=sequence(lookupTable);
         }
-        LoopExpr realLoop=new LoopExpr(invertedLogic, whileCondition, doActions);
+        WhileExpr realLoop=new WhileExpr(invertedLogic, whileCondition, doActions);
         checkAndNext(TokenType.OD, "expected od to end while statement, found "+currentToken.getType()+" "+currentToken.getStringValue());
         return realLoop;
     }
@@ -289,21 +292,21 @@ public class Parser {
         return realCondition;
     }
 
-    private StringExpr string() throws IOException, TokenizerException {
-        StringExpr realString=new StringExpr(currentToken.getStringValue());
+    private StringVal string() throws IOException, TokenizerException {
+        StringVal realString=new StringVal(currentToken.getStringValue());
         next();
         return realString;
     }
 
 
-    private BoolExpr bool() throws IOException, TokenizerException {
-        BoolExpr realBool=new BoolExpr(currentToken.getType() == TokenType.TRUE);
+    private BoolVal bool() throws IOException, TokenizerException {
+        BoolVal realBool=new BoolVal(currentToken.getType() == TokenType.TRUE);
         next();
         return realBool;
     }
 
-    private NumExpr num() throws IOException, TokenizerException {
-         NumExpr realNum=new NumExpr(currentToken.getValue());
+    private NumVal num() throws IOException, TokenizerException {
+         NumVal realNum=new NumVal(currentToken.getValue());
          next();
          return realNum;
     }

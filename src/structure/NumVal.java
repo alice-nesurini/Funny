@@ -2,11 +2,11 @@ package structure;
 
 import java.math.BigDecimal;
 
-public class NumExpr extends Expr{
+public class NumVal extends Val {
 
     private final BigDecimal value;
 
-    public NumExpr(BigDecimal value) {
+    public NumVal(BigDecimal value) {
         this.value=value;
     }
 

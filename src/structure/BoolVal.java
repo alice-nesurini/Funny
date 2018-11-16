@@ -1,10 +1,9 @@
 package structure;
 
-
-public class BoolExpr extends Expr {
+public class BoolVal extends Val {
     private final Boolean value;
 
-    public BoolExpr(Boolean value) {
+    public BoolVal(Boolean value) {
         this.value=value;
     }
 

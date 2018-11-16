@@ -1,6 +1,5 @@
 package structure;
 
 public abstract class Expr {
-
-    public abstract <T> T getValue();
+    abstract Val eval(Env env);
 }
