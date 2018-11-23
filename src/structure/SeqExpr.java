@@ -20,7 +20,13 @@ public class SeqExpr extends Expr{
 
     @Override
     public Val eval(Env env) {
-        exprs.forEach(e->e.eval(env));
+        exprs.forEach(e-> {
+            try {
+                e.eval(env);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
         return null;
     }
 

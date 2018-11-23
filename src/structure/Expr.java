@@ -1,5 +1,5 @@
 package structure;
 
 public abstract class Expr {
-    public abstract Val eval(Env env);
+    public abstract Val eval(Env env) throws Exception;
 }
