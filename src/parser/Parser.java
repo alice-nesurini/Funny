@@ -78,7 +78,8 @@ public class Parser {
     private Expr assignment(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
         Expr expr;
         if(check(TokenType.ID)){
-            if (!lookupTable.contains(currentToken.getStringValue()))
+            String currentId=currentToken.getStringValue();
+            if (!lookupTable.contains(currentId))
                 throw new ParserException("[parsing] identifier "+currentToken.getStringValue()+" was never declared");
             next();
             switch(currentToken.getType()){
@@ -89,11 +90,13 @@ public class Parser {
                 case DIVISION_EQUALS:
                 case MODULE_EQUALS:
                     next();
-                    return assignment(lookupTable);
+                    //return assignment(lookupTable);
+                    return new SetVarExpr(currentId, assignment(lookupTable));
+                default:tokenizer.prev();
             }
         }
-        tokenizer.prev();
-        next();
+
+        //next();
         expr=logicalOr(lookupTable);
         return expr;
     }
@@ -186,9 +189,32 @@ public class Parser {
     private Expr postfix(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         Expr expr=primary(lookupTable);
         // TODO: POSTFIX
+        while(check(TokenType.OPEN_ROUND_BRACKET)){
+            args(lookupTable);
+        }
         //args(lookupTable);
         // TODO: args? giusto? 0-*
         return expr;
+    }
+
+    private ExprList args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
+        SeqExpr exprSeq=null;
+        // added
+        next();
+        // TODO: maybe wrong?
+        checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
+        if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
+            exprSeq=sequence(lookupTable);
+            System.out.println("args "+currentToken.getType());
+            while(check(TokenType.COMMA)){
+                next();
+                // TODO: expr sequence append? more string!!
+                // missing case more string
+                exprSeq.add(sequence(lookupTable));
+            }
+            checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "Expected )");
+        }
+        return new ExprList(exprSeq.getExprs());
     }
 
     private Expr primary(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
@@ -228,26 +254,6 @@ public class Parser {
 
     private PrintExpr print(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
         return new PrintExpr(args(lookupTable));
-    }
-
-    private ExprList args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
-        SeqExpr exprSeq=null;
-        // added
-        next();
-        // TODO: maybe wrong?
-        checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
-        if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
-            exprSeq=sequence(lookupTable);
-            System.out.println("args "+currentToken.getType());
-            while(check(TokenType.COMMA)){
-                next();
-                // TODO: expr sequence append? more string!!
-                // missing case more string
-                exprSeq.add(sequence(lookupTable));
-            }
-            checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "Expected )");
-        }
-        return new ExprList(exprSeq.getExprs());
     }
 
     private WhileExpr loop(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {

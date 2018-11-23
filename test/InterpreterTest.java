@@ -15,4 +15,19 @@ public class InterpreterTest {
         SeqExpr expr = new Parser(tokenizer).parse();
         expr.eval(null);
     }
+
+
+    @Test
+    public void multiPrintTest() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{->print(\"Hello\n\",\"Test\");}"));
+        SeqExpr expr = new Parser(tokenizer).parse();
+        expr.eval(null);
+    }
+
+    @Test
+    public void simpleNumAssign() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{param->param=2+2;}"));
+        SeqExpr expr = new Parser(tokenizer).parse();
+        expr.eval(null);
+    }
 }

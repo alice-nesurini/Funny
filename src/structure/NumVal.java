@@ -10,7 +10,4 @@ public class NumVal extends Val {
         this.value=value;
     }
 
-    public BigDecimal getValue(){
-        return this.value;
-    }
 }
