@@ -54,6 +54,7 @@ public class Parser {
     private SeqExpr sequence(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         List<Expr> exprs=new ArrayList<>();
 
+        System.out.println("SEQUENCE : "+currentToken.getStringValue());
         //case with one assignment (no semicolon end)
         Expr internalExpr=optAssignment(lookupTable);
         if(internalExpr!=null) {
@@ -77,6 +78,7 @@ public class Parser {
 
     private Expr assignment(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
         Expr expr;
+        System.out.println("assignment ID "+currentToken.getStringValue());
         if(check(TokenType.ID)){
             String currentId=currentToken.getStringValue();
             if (!lookupTable.contains(currentId))
@@ -92,7 +94,11 @@ public class Parser {
                     next();
                     //return assignment(lookupTable);
                     return new SetVarExpr(currentId, assignment(lookupTable));
-                default:tokenizer.prev();
+                default:
+                    prev();
+                    //next();
+                    System.out.println("BACKTRACK --> "+currentToken.getType());
+                    //break;
             }
         }
 
@@ -204,8 +210,9 @@ public class Parser {
         // TODO: maybe wrong?
         checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
         if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
-            exprSeq=sequence(lookupTable);
             System.out.println("args "+currentToken.getType());
+            exprSeq=sequence(lookupTable);
+
             while(check(TokenType.COMMA)){
                 next();
                 // TODO: expr sequence append? more string!!
@@ -218,6 +225,7 @@ public class Parser {
     }
 
     private Expr primary(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+        System.out.println("Primary : "+currentToken.getType());
         switch(currentToken.getType()){
             case NUM:
                 return num();
@@ -230,8 +238,8 @@ public class Parser {
             case STRING:
                 return string();
             case ID:
-                return null;
-                //return getId();
+                //return null;
+                return getId();
             case OPEN_CURLY_BRACKET:
                 return function();
             case OPEN_ROUND_BRACKET:
@@ -250,6 +258,12 @@ public class Parser {
                 return print(lookupTable);
         }
         return null;
+    }
+
+    private StringVal getId() throws IOException, TokenizerException {
+        StringVal id=new StringVal(currentToken.getStringValue());
+        next();
+        return id;
     }
 
     private PrintExpr print(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
@@ -381,5 +395,10 @@ public class Parser {
             default:
                 return false;
         }
+    }
+    private void prev() throws TokenizerException, IOException {
+        tokenizer.prev();
+        currentToken=pastToken;
+        //next();
     }
 }

@@ -72,11 +72,11 @@ public class ParserTest {
     @Test
     public void testLogicalOr() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true||false||false}"));
-        SeqExpr expr = new Parser(tokenizer).parse();;
+        SeqExpr expr = new Parser(tokenizer).parse();
         assertEquals(1, (expr).size());
     }
 
-    //@Disabled
+    @Disabled
     @Test
     public void testComparison() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true==false;" +
@@ -90,6 +90,15 @@ public class ParserTest {
                 "while (id==true) do other=5; od;"+
                 "print(\"Hello\");"+
                 "print(\"Super\", \"Hello\")"+
+                "}"));
+        SeqExpr expr = new Parser(tokenizer).parse();
+        expr.getExprs();
+    }
+
+    @Test public void printParam() throws TokenizerException, ParserException, IOException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{(param) ->" +
+                "param=5;"+
+                "print(param);"+
                 "}"));
         SeqExpr expr = new Parser(tokenizer).parse();
         expr.getExprs();

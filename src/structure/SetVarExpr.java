@@ -13,6 +13,7 @@ public class SetVarExpr extends Expr {
     @Override
     public Val eval(Env env) {
         //add id = value.eval to env?
-        return null;
+        //ENV must increase
+        return value.eval(env);
     }
 }
