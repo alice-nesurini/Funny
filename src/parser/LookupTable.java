@@ -3,6 +3,8 @@ package parser;
 import java.util.List;
 
 public class LookupTable{
+
+    //TODO: fix like env with enclosing
     private final List<String> ids;
     private final LookupTable lookupTable;
 

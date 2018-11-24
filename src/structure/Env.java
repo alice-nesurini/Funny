@@ -4,8 +4,8 @@ public class Env {
     private final Frame frame;
     private final Env enclosing;
 
-    public Env(Env enclosing) {
-        this.frame = new Frame();
+    public Env(Frame frame, Env enclosing) {
+        this.frame = frame;
         this.enclosing = enclosing;
     }
 
@@ -13,14 +13,7 @@ public class Env {
         frame.add(id, val);
     }
 
-    public boolean contains(String id){
-        if(enclosing == null){
-            return frame.contains(id);
-        }
-        return frame.contains(id) || enclosing.frame.contains(id);
-    }
-
     public Val get(String id){
-        return frame.contains(id)?frame.get(id):enclosing.frame.get(id);
+        return frame.contains(id)?frame.get(id):enclosing.get(id);
     }
 }

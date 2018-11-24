@@ -1,8 +1,8 @@
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import parser.Parser;
 import parser.ParserException;
 import structure.Env;
+import structure.Frame;
 import structure.SeqExpr;
 import tokenizer.Tokenizer;
 import tokenizer.TokenizerException;
@@ -15,7 +15,7 @@ public class InterpreterTest {
     public void simplePrintTest() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{->print(\"Hello\n\");print(\"Other Hello\")}"));
         SeqExpr expr = new Parser(tokenizer).parse();
-        expr.eval(new Env(null));
+        expr.eval(new Env(new Frame(funExpr.getParams(), funExpr.getLocals(), argVals), null));
     }
 
 
@@ -24,13 +24,13 @@ public class InterpreterTest {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{->print(\"Hello\n\",\"Test\", \"java\");}"));
         SeqExpr expr = new Parser(tokenizer).parse();
         expr.getExprs();
-        expr.eval(new Env(null));
+        expr.eval(new Env(new Frame(funExpr.getParams(), funExpr.getLocals(), argVals), null));
     }
 
     @Test
     public void simpleNumAssign() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{param->param=2+7;print(param)}"));
         SeqExpr expr = new Parser(tokenizer).parse();
-        expr.eval(new Env(null));
+        expr.eval(new Env(new Frame(funExpr.getParams(), funExpr.getLocals(), argVals), null));
     }
 }

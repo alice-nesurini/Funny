@@ -10,7 +10,7 @@ public class PrintExpr extends Expr{
 
     @Override
     public Val eval(Env env){
-        sequence.eval(env).forEach(e-> {
+        /*sequence.eval(env).forEach(e-> {
             System.out.println("\tSEQ type : "+e);
             try {
                 String id=e.eval(env).checkString().getValue();
@@ -24,7 +24,7 @@ public class PrintExpr extends Expr{
             } catch (InterpreterException ie) {
                 ie.printStackTrace();
             }
-        });
+        });*/
         // TODO: what to return? nothing?
         return null;
     }

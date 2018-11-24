@@ -23,31 +23,38 @@ public class Parser {
         this.tokenizer=tokenizer;
     }
 
-    public SeqExpr parse() throws IOException, TokenizerException, ParserException {
+    public Expr parse() throws IOException, TokenizerException, ParserException {
         next();
         return program();
     }
 
-    private SeqExpr program() throws IOException, TokenizerException, ParserException {
-        SeqExpr expr=function();
+    private Expr program() throws IOException, TokenizerException, ParserException {
+        Expr expr=function(null);
         check(TokenType.EOS, "no valid end of stream found");
         return expr;
     }
 
-    private SeqExpr function() throws IOException, TokenizerException, ParserException {
+    private Expr function(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         checkAndNext(TokenType.OPEN_CURLY_BRACKET, "open '{' error");
         List<String> params=optParams();
         List<String> locals=optLocals();
         params.addAll(locals);
 
-        LookupTable lookupTable=new LookupTable(params, null);
-        SeqExpr expr=optSequence(lookupTable);
+        //TODO: fix scope and so will be optSequence(new Scope(params, scope))
+        // LookupTable lookupTable=new LookupTable(params, null);
+        Expr expr=optSequence(new LookupTable(params, lookupTable));
         checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error");
         return expr;
     }
 
-    private SeqExpr optSequence(LookupTable lookupTable) throws ParserException, IOException, TokenizerException {
-        checkAndNext(TokenType.ARROW, "starting ARROW (->) was expected");
+    // optSequence ::= ( "->" sequence )?
+    private Expr optSequence(LookupTable lookupTable) throws ParserException, IOException, TokenizerException {
+        // check for arrow -> if none is provided the program is empty
+        // and will return Nil
+        if(!check(TokenType.ARROW)){
+            return NilVal.instance();
+        }
+        next();
         return sequence(lookupTable);
     }
 
@@ -241,7 +248,7 @@ public class Parser {
                 //return null;
                 return getId();
             case OPEN_CURLY_BRACKET:
-                return function();
+                return function(lookupTable);
             case OPEN_ROUND_BRACKET:
                 return null;
                 //return subsequence();

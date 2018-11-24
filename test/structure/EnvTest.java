@@ -1,6 +1,5 @@
 package structure;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -9,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EnvTest {
 
-    private Env env=new Env(null);
+    private Env env=new Env(new Frame(funExpr.getParams(), funExpr.getLocals(), argVals), null);
 
     @Test
     void add() throws InterpreterException {

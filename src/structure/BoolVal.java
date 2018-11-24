@@ -7,7 +7,9 @@ public class BoolVal extends Val {
         this.value=value;
     }
 
-    public Boolean getValue(){
-        return this.value;
+    public BoolVal checkBool(){
+        return this;
     }
+
+    //TODO: implement inverted logic
 }
