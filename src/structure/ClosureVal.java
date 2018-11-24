@@ -20,6 +20,7 @@ public class ClosureVal extends Val {
         return funExpr.getBody().eval(new Env(new Frame(funExpr.getParams(), funExpr.getLocals(), argVals), env));
     }
 
+    @Override
     public ClosureVal checkClosure(){
         return this;
     }

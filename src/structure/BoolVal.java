@@ -7,6 +7,7 @@ public class BoolVal extends Val {
         this.value=value;
     }
 
+    @Override
     public BoolVal checkBool(){
         return this;
     }

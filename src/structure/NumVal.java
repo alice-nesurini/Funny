@@ -16,6 +16,7 @@ public class NumVal extends Val {
         return value;
     }
 
+    @Override
     public NumVal checkNum(){
         return this;
     }

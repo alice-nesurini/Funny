@@ -15,7 +15,7 @@ public class BinaryExpr extends Expr{
     }
 
     @Override
-    public Val eval(Env env) throws Exception {
+    public Val eval(Env env) throws InterpreterException {
         switch (operator){
             case PLUS:
                 return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));

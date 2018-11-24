@@ -2,6 +2,7 @@ package structure;
 
 import java.util.List;
 
+// Adaptive pattern = wrapper class
 public class SeqExpr extends Expr{
     private final List<Expr> exprs;
 
@@ -9,7 +10,7 @@ public class SeqExpr extends Expr{
         this.exprs=exprs;
     }
 
-    //public because of testing
+    //TODO: public because of testing
     public int size(){
         return exprs.size();
     }
@@ -19,18 +20,14 @@ public class SeqExpr extends Expr{
     }
 
     @Override
-    public Val eval(Env env) {
-        exprs.forEach(e-> {
-            try {
-                e.eval(env);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
-        return null;
+    public Val eval(Env env) throws InterpreterException {
+        for(int i=0; i<exprs.size(); i++) {
+            exprs.get(i).eval(env);
+        }
+        return NilVal.instance();
     }
 
-    // added
+    // TODO: I don't think I should do this add
     public void add(SeqExpr sequence) {
         exprs.add(sequence);
     }

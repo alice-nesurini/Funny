@@ -274,7 +274,7 @@ public class Parser {
     }
 
     private PrintExpr print(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
-        return new PrintExpr(args(lookupTable));
+        return new PrintExpr(args(lookupTable), currentToken.getType());
     }
 
     private WhileExpr loop(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {

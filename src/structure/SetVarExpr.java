@@ -11,7 +11,7 @@ public class SetVarExpr extends Expr {
     }
 
     @Override
-    public Val eval(Env env) throws Exception {
+    public Val eval(Env env) throws InterpreterException {
         //add id = value.eval to env?
         //ENV must increase
         env.add(id, value.eval(env));
