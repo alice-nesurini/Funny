@@ -204,14 +204,14 @@ public class Parser {
     }
 
     private ExprList args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
-        SeqExpr exprSeq=null;
+        SeqExpr exprSeq=new SeqExpr(new ArrayList<>());
         // added
         next();
         // TODO: maybe wrong?
         checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
         if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
             System.out.println("args "+currentToken.getType());
-            exprSeq=sequence(lookupTable);
+            exprSeq.add(sequence(lookupTable));
 
             while(check(TokenType.COMMA)){
                 next();

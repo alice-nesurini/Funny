@@ -13,7 +13,14 @@ public class Env {
         frame.add(id, val);
     }
 
-    public Val contains(String id){
+    public boolean contains(String id){
+        if(enclosing == null){
+            return frame.contains(id);
+        }
+        return frame.contains(id) || enclosing.frame.contains(id);
+    }
+
+    public Val get(String id){
         return frame.contains(id)?frame.get(id):enclosing.frame.get(id);
     }
 }

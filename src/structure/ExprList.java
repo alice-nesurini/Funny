@@ -17,6 +17,7 @@ public class ExprList {
         exprs.forEach(e-> {
             try {
                 list.add(e.eval(env));
+                System.out.println(e.eval(env));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

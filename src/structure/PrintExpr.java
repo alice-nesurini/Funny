@@ -11,10 +11,18 @@ public class PrintExpr extends Expr{
     @Override
     public Val eval(Env env){
         sequence.eval(env).forEach(e-> {
+            System.out.println("\tSEQ type : "+e);
             try {
-                System.out.print(e.eval(env).checkString().getValue());
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                String id=e.eval(env).checkString().getValue();
+                if(env.contains(id)){
+                    System.out.print(env.get(e.eval(env).checkString().getValue()).checkNum().getValue());
+                }
+                else{
+                    System.out.print(id);
+                }
+                //System.out.print(e.eval(env).checkNum().getValue());
+            } catch (InterpreterException ie) {
+                ie.printStackTrace();
             }
         });
         // TODO: what to return? nothing?

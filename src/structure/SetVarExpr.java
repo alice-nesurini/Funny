@@ -14,6 +14,9 @@ public class SetVarExpr extends Expr {
     public Val eval(Env env) throws Exception {
         //add id = value.eval to env?
         //ENV must increase
-        return value.eval(env);
+        env.add(id, value.eval(env));
+        //return value.eval(env);
+        // TODO : return null? just increment env?
+        return null;
     }
 }

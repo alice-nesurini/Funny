@@ -20,8 +20,8 @@ class EnvTest {
         env.add("myVar", new NumVal(b4));
         env.add("other", new NumVal(b5));
 
-        assertEquals(b3, (env.contains("param").checkNum().getValue()));
-        assertEquals(b4, (env.contains("myVar").checkNum().getValue()));
-        assertEquals(b5, (env.contains("other").checkNum().getValue()));
+        assertEquals(b3, (env.get("param").checkNum().getValue()));
+        assertEquals(b4, (env.get("myVar").checkNum().getValue()));
+        assertEquals(b5, (env.get("other").checkNum().getValue()));
     }
 }
