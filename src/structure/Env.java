@@ -9,8 +9,9 @@ public class Env {
         this.enclosing = enclosing;
     }
 
-    public void add(String id, Val val){
+    public Val add(String id, Val val){
         frame.add(id, val);
+        return val;
     }
 
     public Val get(String id){

@@ -77,7 +77,6 @@ public class ParserTest {
         //assertEquals(1, (expr).size());
     }
 
-    @Disabled
     @Test
     public void testComparison() throws TokenizerException, ParserException, IOException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true==false;" +

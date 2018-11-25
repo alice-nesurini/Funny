@@ -1,5 +1,7 @@
 package structure;
 
+import java.util.ArrayList;
+
 public class SetVarExpr extends Expr {
 
     private final String id;
@@ -12,11 +14,10 @@ public class SetVarExpr extends Expr {
 
     @Override
     public Val eval(Env env) throws InterpreterException {
-        //add id = value.eval to env?
         //ENV must increase
-        env.add(id, value.eval(env));
-        //return value.eval(env);
-        // TODO : return null? just increment env?
-        return null;
+        if(env==null){
+            env=new Env(new Frame(new ArrayList<>(), new ArrayList<>(), new ArrayList<>()), null);
+        }
+        return env.add(id, value.eval(env));
     }
 }
