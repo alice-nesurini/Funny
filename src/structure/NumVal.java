@@ -20,5 +20,4 @@ public class NumVal extends Val {
     public NumVal checkNum(){
         return this;
     }
-
 }

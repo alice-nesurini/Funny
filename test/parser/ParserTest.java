@@ -1,8 +1,10 @@
 package parser;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import structure.Expr;
+import structure.InterpreterException;
 import structure.SeqExpr;
 import tokenizer.Tokenizer;
 import tokenizer.TokenizerException;
@@ -13,10 +15,11 @@ import java.io.StringReader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Ignore
 public class ParserTest {
 
     @Test
-    public void testNumericSequence() throws TokenizerException, ParserException, IOException {
+    public void testNumericSequence() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=2}"));
         Expr expr=new Parser(tokenizer).parse();
         //assertEquals(1, (expr).size());
@@ -37,19 +40,19 @@ public class ParserTest {
     }
 
     @Test
-    public void testOptLocal() throws IOException, TokenizerException, ParserException {
+    public void testOptLocal() throws IOException, TokenizerException, ParserException, InterpreterException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{myVar param id ->}"));
         new Parser(tokenizer).parse();
     }
 
     @Test
-    public void testOptParam() throws TokenizerException, ParserException, IOException {
+    public void testOptParam() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) ->}"));
         new Parser(tokenizer).parse();
     }
 
     @Test
-    public void testBooleanAssignment() throws TokenizerException, ParserException, IOException {
+    public void testBooleanAssignment() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true}"));
         Expr expr=new Parser(tokenizer).parse();
         //assertEquals(1, (expr).size());
@@ -71,14 +74,14 @@ public class ParserTest {
     }
 
     @Test
-    public void testLogicalOr() throws TokenizerException, ParserException, IOException {
+    public void testLogicalOr() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true||false||false}"));
         Expr expr = new Parser(tokenizer).parse();
         //assertEquals(1, (expr).size());
     }
 
     @Test
-    public void testComparison() throws TokenizerException, ParserException, IOException {
+    public void testComparison() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true==false;" +
                 "param=5<1;"+
                 "other=5+4*8/2;"+
@@ -95,7 +98,7 @@ public class ParserTest {
         //expr.getExprs();
     }
 
-    @Test public void printParam() throws TokenizerException, ParserException, IOException {
+    @Test public void printParam() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(param) ->" +
                 "param=5;"+
                 "print(param);"+

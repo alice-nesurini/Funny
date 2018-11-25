@@ -23,16 +23,18 @@ public class Parser {
         this.tokenizer=tokenizer;
     }
 
-    public Expr parse() throws IOException, TokenizerException, ParserException {
+    public Expr parse() throws IOException, TokenizerException, ParserException, InterpreterException {
         next();
         return program();
     }
 
     // program ::= function Eos
-    private Expr program() throws IOException, TokenizerException, ParserException {
+    private Expr program() throws IOException, TokenizerException, ParserException, InterpreterException {
         Expr expr=function(null);
         check(TokenType.EOS, "no valid end of stream found");
-        return expr;
+        // need to run the actual code
+        // invoke the outer closure
+        return new InvokeExpr(expr, new ExprList(new ArrayList<>(0))).eval(null);
     }
 
     // function ::= "{" optParams optLocals optSequence "}"
@@ -40,13 +42,15 @@ public class Parser {
         checkAndNext(TokenType.OPEN_CURLY_BRACKET, "open '{' error");
         List<String> params=optParams();
         List<String> locals=optLocals();
-        params.addAll(locals);
+        List<String> all=new ArrayList<>();
+        all.addAll(params);
+        all.addAll(locals);
 
         //TODO: fix scope and so will be optSequence(new Scope(params, scope))
         // LookupTable lookupTable=new LookupTable(params, null);
-        Expr expr=optSequence(new LookupTable(params, lookupTable));
+        FunExpr funExpr=new FunExpr(params, locals, optSequence(new LookupTable(all, lookupTable)));
         checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error");
-        return expr;
+        return funExpr;
     }
 
     // optSequence ::= ( "->" sequence )?
@@ -59,7 +63,6 @@ public class Parser {
         next();
         return sequence(lookupTable);
     }
-
 
     // sequence ::= optAssignment ( ";" optAssignment )*
     private Expr sequence(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
@@ -81,7 +84,6 @@ public class Parser {
         }
         return exprs.size()==0?NilVal.instance():new SeqExpr(new ExprList(exprs));
     }
-
 
     // optAssignment ::= assignment?
     private Expr optAssignment(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
@@ -206,7 +208,6 @@ public class Parser {
     // postfix ::= primary args*
     private Expr postfix(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         Expr expr=primary(lookupTable);
-        // TODO: POSTFIX FIX FIX FIX
         while(check(TokenType.OPEN_ROUND_BRACKET)){
             expr=new InvokeExpr(expr, args(lookupTable));
         }
@@ -248,7 +249,7 @@ public class Parser {
             case STRING:
                 return string();
             case ID:
-                return getId();
+                return getId(lookupTable);
             case OPEN_CURLY_BRACKET:
                 return function(lookupTable);
             case OPEN_ROUND_BRACKET:
@@ -274,10 +275,11 @@ public class Parser {
         return expr;
     }
 
-    private StringVal getId() throws IOException, TokenizerException {
-        StringVal id=new StringVal(currentToken.getStringValue());
+    private GetVarExpr getId(LookupTable lookupTable) throws IOException, TokenizerException {
+        String id=currentToken.getStringValue();
+        lookupTable.contains(id);
         next();
-        return id;
+        return new GetVarExpr(id);
     }
 
     private PrintExpr print(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
@@ -344,7 +346,6 @@ public class Parser {
         return realString;
     }
 
-
     private BoolVal bool() throws IOException, TokenizerException {
         BoolVal realBool=new BoolVal(currentToken.getType() == TokenType.TRUE);
         next();
@@ -407,6 +408,7 @@ public class Parser {
             throw new ParserException("[parsing] "+msg);
         next();
     }
+
     private boolean isMult() {
         switch (currentToken.getType()) {
             case STAR:
@@ -417,7 +419,8 @@ public class Parser {
                 return false;
         }
     }
-    private void prev() throws TokenizerException, IOException {
+
+    private void prev() throws TokenizerException {
         tokenizer.prev();
         currentToken=pastToken;
         //next();

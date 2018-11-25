@@ -11,7 +11,7 @@ public class InvokeExpr extends Expr {
     }
 
     @Override
-    public Val eval(Env env) {
-        return null;
+    public Val eval(Env env) throws InterpreterException {
+        return expr.eval(env).checkClosure().apply(exprList.eval(env));
     }
 }

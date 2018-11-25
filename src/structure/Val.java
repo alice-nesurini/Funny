@@ -2,7 +2,7 @@ package structure;
 
 public abstract class Val extends Expr {
     @Override
-    public Val eval(Env env) {
+    public Val eval(Env env) throws InterpreterException {
         return this;
     }
 
