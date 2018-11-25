@@ -20,4 +20,9 @@ public class NumVal extends Val {
     public NumVal checkNum(){
         return this;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

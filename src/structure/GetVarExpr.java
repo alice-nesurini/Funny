@@ -10,7 +10,6 @@ public class GetVarExpr extends Expr {
 
     @Override
     public Val eval(Env env) throws InterpreterException {
-        System.out.println(env.get(variable).checkNum().getValue());
         return env.get(variable);
     }
 }
