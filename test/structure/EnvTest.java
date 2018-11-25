@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EnvTest {
 
-    private Env env=new Env(new Frame(null, null, null), null);
+    private Env env;
 
     @Test
     void add() throws InterpreterException {

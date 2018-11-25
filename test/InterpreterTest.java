@@ -26,7 +26,7 @@ public class InterpreterTest {
 
     @Test
     public void simpleNumAssign() throws TokenizerException, ParserException, IOException, InterpreterException {
-        final Tokenizer tokenizer = new Tokenizer(new StringReader("{param->param=2+7;print(param)}"));
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{param->param=2+7;print(\"param: \", param)}"));
         Expr expr = new Parser(tokenizer).parse();
         expr.eval(null);
     }
