@@ -66,10 +66,13 @@ class EnvTest {
     @Test
     void get2() {
         // all ok
-        Env env=new Env(mock(Frame.class), null);
-        /*Val val=env.add("id", mock(Val.class));
+        Frame mockFrame=mock(Frame.class);
+        Env env=new Env(mockFrame, null);
+        Val val=env.add("id", mock(Val.class));
         assertNotNull(val);
+        when(mockFrame.contains(any(String.class))).thenReturn(true);
+        when(mockFrame.get(any(String.class))).thenReturn(mock(Val.class));
         val=env.get("id");
-        assertNotNull(val);*/
+        assertNotNull(val);
     }
 }

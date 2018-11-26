@@ -25,7 +25,6 @@ public class Env {
         if(id==null || id.isEmpty()){
             throw new IllegalArgumentException("id can't be null");
         }
-        System.out.println(frame.contains(id));
         return frame.contains(id)?frame.get(id):enclosing.get(id);
     }
 }
