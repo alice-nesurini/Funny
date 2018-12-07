@@ -302,9 +302,10 @@ public class TokenTest{
 
         assertEquals("myVar", tokenizer.next().getStringValue());
         assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.MINUS, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.NUM, runnerToken.getType());
-        assertEquals(new BigDecimal(-1), runnerToken.getValue());
+        assertEquals(new BigDecimal(1), runnerToken.getValue());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
         assertEquals("myVar", tokenizer.next().getStringValue());
@@ -537,6 +538,33 @@ public class TokenTest{
         assertEquals(TokenType.ARROW, tokenizer.next().getType());
         tokenizer.prev();
         assertThrows(TokenizerException.class, tokenizer::prev);
+    }
+
+    @Test
+    public void testingMinus() throws IOException, TokenizerException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{a->a=5;a=a-5+2;print(\"a: \", a)}"));
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.MINUS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.PLUS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+        assertEquals(TokenType.PRINT, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.STRING, tokenizer.next().getType());
+        assertEquals(TokenType.COMMA, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
 
     @Test

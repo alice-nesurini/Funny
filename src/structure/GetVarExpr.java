@@ -9,7 +9,7 @@ public class GetVarExpr extends Expr {
     }
 
     @Override
-    public Val eval(Env env) throws InterpreterException {
+    public Val eval(Env env) {
         return env.get(variable);
     }
 }

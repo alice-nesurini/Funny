@@ -32,6 +32,11 @@ public class Parser {
     private Expr program() throws IOException, TokenizerException, ParserException, InterpreterException {
         Expr expr=function(null);
         check(TokenType.EOS, "no valid end of stream found");
+
+
+        // DEBUG
+        // return expr;
+
         // need to run the actual code
         // invoke the outer closure
         return new InvokeExpr(expr, new ExprList(new ArrayList<>(0))).eval(null);
@@ -49,7 +54,7 @@ public class Parser {
         //TODO: fix scope and so will be optSequence(new Scope(params, scope))
         // LookupTable lookupTable=new LookupTable(params, null);
         FunExpr funExpr=new FunExpr(params, locals, optSequence(new LookupTable(all, lookupTable)));
-        checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error");
+        checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error, found "+currentToken.getType());
         return funExpr;
     }
 
@@ -171,12 +176,10 @@ public class Parser {
     // add ::= mult ( ( "+" | "-" ) mult )*
     private Expr add(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
         Expr expr=mult(lookupTable);
-        switch(currentToken.getType()){
-            case PLUS:
-            case MINUS:
-                TokenType type=currentToken.getType();
-                next();
-                expr=new BinaryExpr(expr, mult(lookupTable), type);
+        while(check(TokenType.PLUS) || check(TokenType.MINUS)){
+            TokenType type=currentToken.getType();
+            next();
+            expr=new BinaryExpr(expr, mult(lookupTable), type);
         }
         return expr;
     }
@@ -225,7 +228,7 @@ public class Parser {
                 next();
                 sequence.add(sequence(lookupTable));
             }
-            checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "Expected )");
+            checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "expected )");
         }
         return new ExprList(sequence);
     }
@@ -251,6 +254,7 @@ public class Parser {
             case ID:
                 return getId(lookupTable);
             case OPEN_CURLY_BRACKET:
+                // return new InvokeExpr(function(lookupTable))
                 return function(lookupTable);
             case OPEN_ROUND_BRACKET:
                 return subsequence(lookupTable);
@@ -285,6 +289,7 @@ public class Parser {
     private PrintExpr print(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
         TokenType type=currentToken.getType();
         next();
+        // TODO: case args return null!
         return new PrintExpr(args(lookupTable), type);
     }
 

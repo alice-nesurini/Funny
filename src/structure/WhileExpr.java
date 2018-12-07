@@ -13,7 +13,17 @@ public class WhileExpr extends Expr{
     }
 
     @Override
-    public Val eval(Env env) {
-        return null;
+    public Val eval(Env env) throws InterpreterException {
+        if(invertedLogic) {
+            while(!whileCondition.eval(env).checkBool().toBool()){
+                doActions.eval(env);
+            }
+        }
+        else{
+            while(whileCondition.eval(env).checkBool().toBool()){
+                doActions.eval(env);
+            }
+        }
+        return NilVal.instance();
     }
 }

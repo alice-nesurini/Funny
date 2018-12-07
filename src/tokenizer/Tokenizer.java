@@ -317,7 +317,7 @@ public class Tokenizer{
         currentChar=reader.read();
         if(currentChar=='>') return new Token(TokenType.ARROW);
         if(currentChar=='=') return new Token(TokenType.MINUS_EQUALS);
-        if(Character.isDigit(currentChar)) return checkDigit(true);
+        // if(Character.isDigit(currentChar)) return checkDigit(true);
         reader.reset();
         return new Token(TokenType.MINUS);
     }

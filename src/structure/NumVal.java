@@ -25,4 +25,26 @@ public class NumVal extends Val {
     public String toString() {
         return value.toString();
     }
+
+    @Override
+    public boolean less(Val val) throws InterpreterException {
+        return value.compareTo(val.checkNum().value) == -1;
+    }
+
+    @Override
+    public boolean greater(Val val) throws InterpreterException {
+        return value.compareTo(val.checkNum().value) == 1;
+    }
+
+    @Override
+    public boolean lessEquals(Val val) throws InterpreterException {
+        // include 0
+        return value.compareTo(val.checkNum().value) == -1 || value.compareTo(val.checkNum().value) == 0;
+    }
+
+    @Override
+    public boolean greaterEquals(Val val) throws InterpreterException {
+        // include 0
+        return value.compareTo(val.checkNum().value) == 1 || value.compareTo(val.checkNum().value) == 0;
+    }
 }

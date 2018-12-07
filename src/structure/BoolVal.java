@@ -12,5 +12,8 @@ public class BoolVal extends Val {
         return this;
     }
 
+    public boolean toBool(){
+        return value;
+    }
     //TODO: implement inverted logic
 }

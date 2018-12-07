@@ -19,7 +19,25 @@ public class BinaryExpr extends Expr{
         switch (operator){
             case PLUS:
                 return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));
+            case MINUS:
+                return new NumVal((left.eval(env).checkNum()).getValue().subtract((right.eval(env).checkNum()).getValue()));
+            case STAR:
+                return new NumVal((left.eval(env).checkNum()).getValue().multiply((right.eval(env).checkNum()).getValue()));
+            case DIVISION:
+                return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue()));
+            case LESS_EQUALS:
+                return new BoolVal(left.eval(env).lessEquals(right.eval(env)));
+            case LESS:
+                return new BoolVal(left.eval(env).less(right.eval(env)));
+            case GREATER:
+                return new BoolVal(left.eval(env).greater(right.eval(env)));
+            case GREATER_EQUALS:
+                return new BoolVal(left.eval(env).greaterEquals(right.eval(env)));
+            case MODULE:
+                return new NumVal((left.eval(env).checkNum()).getValue().remainder((right.eval(env).checkNum()).getValue()));
+                // TODO: impl. comparison operation
+            default:
+                return NilVal.instance();
         }
-        return null;
     }
 }
