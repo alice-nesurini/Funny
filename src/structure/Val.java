@@ -37,4 +37,20 @@ public abstract class Val extends Expr {
     public boolean greaterEquals(Val val) throws InterpreterException {
         throw new InterpreterException("Not correct classes [greaterEquals method]");
     }
+
+    public Val subtract(Val val) throws InterpreterException {
+        throw new InterpreterException("Not numbers Can't apply substract (-=)");
+    }
+
+    public Val add(Val val) throws InterpreterException {
+        throw new InterpreterException("Not numbers Can't apply plus (+=)");
+    }
+
+    public Val module(Val val) throws InterpreterException {
+        throw new InterpreterException("Not numbers Can't apply module (%=)");
+    }
+
+    public Val star(Val val) throws InterpreterException {
+        throw new InterpreterException("Not numbers Can't apply multiplication (*=)");
+    }
 }

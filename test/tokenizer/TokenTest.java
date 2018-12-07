@@ -572,4 +572,53 @@ public class TokenTest{
         final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("complete.funny")));
         while(tokenizer.next().getType()!=TokenType.EOS){}
     }
+
+    @Test
+    public void makeCounter() throws IOException, TokenizerException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{makeCounter yourCounter n ->\n" +
+                "    makeCounter = {(balance) ->\n" +
+                "        {(amount) -> balance += amount}\n" +
+                "    };\n" +
+                "    yourCounter = makeCounter(50);\n" +
+                "    print(yourCounter(-10));\n" +
+                "}"));
+
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.PLUS_EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+        assertEquals(TokenType.PRINT, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.MINUS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+    }
 }

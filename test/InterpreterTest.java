@@ -74,7 +74,6 @@ public class InterpreterTest {
         expr.eval(null);
     }
 
-    @Disabled
     @Test
     public void counterClosure() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{makeCounter myCounter yourCounter n ->\n" +
@@ -90,14 +89,27 @@ public class InterpreterTest {
                 "    println(\"yourCounter: \", yourCounter(0));\n" +
                 "    println(\"\");\n" +
                 "    n = 0;\n"+
-                "while n < 10 do\n" +
-                "        println(\"myCounter[\", n, \"]: \", myCounter(50));\n" +
-                "        println(\"yourCounter[\", n, \"]: \", yourCounter(-10));\n" +
-                "        println();\n" +
-                "        n += 1\n" +
+                "    while n < 10 do\n" +
+                "        print(\"myCounter[\", n, \"]: \", myCounter(50), \"\n\");\n" +
+                "        print(\"yourCounter[\", n, \"]: \", yourCounter(-10), \"\n\");\n" +
+                "        n = n+1;\n" +
+                "        print(\"n:\", n);"+
                 "    od"+
+                "}"));
+        // Problema con il -10
+        Expr expr = new Parser(tokenizer).parse();
+        expr.eval(null);
+    }
+
+    @Test
+    public void simpleMinusEquals() throws TokenizerException, ParserException, IOException, InterpreterException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{n ->\n" +
+                "n=2;" +
+                "n+=1;" +
+                "print(n)" +
                 "}"));
         Expr expr = new Parser(tokenizer).parse();
         expr.eval(null);
     }
+
 }

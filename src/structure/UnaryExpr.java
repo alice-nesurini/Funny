@@ -13,7 +13,13 @@ public class UnaryExpr extends Expr {
     }
 
     @Override
-    public Val eval(Env env) {
-        return null;
+    public Val eval(Env env) throws InterpreterException {
+        switch(type){
+            case MINUS:
+                return unary.eval(env).checkNum().negate();
+            case PLUS:
+            case NOT:
+        }
+        return NilVal.instance();
     }
 }

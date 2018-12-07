@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class NumVal extends Val {
 
-    private final BigDecimal value;
+    private BigDecimal value;
 
     //TODO: add operation like eq, minus
 
@@ -46,5 +46,34 @@ public class NumVal extends Val {
     public boolean greaterEquals(Val val) throws InterpreterException {
         // include 0
         return value.compareTo(val.checkNum().value) == 1 || value.compareTo(val.checkNum().value) == 0;
+    }
+
+    @Override
+    public Val subtract(Val val) throws InterpreterException {
+        this.value=value.subtract(val.checkNum().getValue());
+        return this;
+    }
+
+    @Override
+    public Val add(Val val) throws InterpreterException {
+        this.value=value.add(val.checkNum().getValue());
+        return this;
+    }
+
+    @Override
+    public Val module(Val val) throws InterpreterException {
+        this.value=value.remainder(val.checkNum().getValue());
+        return this;
+    }
+
+    @Override
+    public Val star(Val val) throws InterpreterException {
+        this.value=value.multiply(val.checkNum().getValue());
+        return this;
+    }
+
+    public Val negate() {
+        value=value.negate();
+        return this;
     }
 }

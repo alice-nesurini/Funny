@@ -104,7 +104,8 @@ public class Parser {
             if (!lookupTable.contains(currentId))
                 throw new ParserException("[parsing] identifier "+currentToken.getStringValue()+" was never declared");
             next();
-            switch(currentToken.getType()){
+            TokenType op=currentToken.getType();
+            switch(op){
                 case EQUALS:
                 case PLUS_EQUALS:
                 case MINUS_EQUALS:
@@ -112,12 +113,10 @@ public class Parser {
                 case DIVISION_EQUALS:
                 case MODULE_EQUALS:
                     next();
-                    //TODO: assignment and the type?
-                    return new SetVarExpr(currentId, assignment(lookupTable));
+                    System.out.println("DEBUG: "+op);
+                    return new SetVarExpr(currentId, assignment(lookupTable), op);
                 default:
                     prev();
-                    //TODO: no idea if this works
-                    System.out.println("BACKTRACK --> "+currentToken.getType());
             }
         }
 
@@ -198,12 +197,13 @@ public class Parser {
     // unary ::= ( "+" | "-" | "!" ) unary
     //	        | postfix
     private Expr unary(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        switch(currentToken.getType()) {
+        TokenType op=currentToken.getType();
+        switch(op) {
             case PLUS:
             case MINUS:
             case NOT:
                 next();
-                return new UnaryExpr(currentToken.getType(), unary(lookupTable));
+                return new UnaryExpr(op, unary(lookupTable));
         }
         return postfix(lookupTable);
     }
