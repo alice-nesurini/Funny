@@ -92,7 +92,7 @@ public class InterpreterTest {
                 "    while n < 10 do\n" +
                 "        print(\"myCounter[\", n, \"]: \", myCounter(50), \"\n\");\n" +
                 "        print(\"yourCounter[\", n, \"]: \", yourCounter(-10), \"\n\");\n" +
-                "        n = n+1;\n" +
+                "        n += 1;\n" +
                 "        print(\"n:\", n);"+
                 "    od"+
                 "}"));

@@ -18,7 +18,9 @@ public class UnaryExpr extends Expr {
             case MINUS:
                 return unary.eval(env).checkNum().negate();
             case PLUS:
+                return unary.eval(env).checkNum().plus();
             case NOT:
+                return unary.eval(env).checkBool().negate();
         }
         return NilVal.instance();
     }

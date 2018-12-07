@@ -2,43 +2,44 @@ package parser;
 
 import java.util.List;
 
-public class LookupTable{
+// TODO: complete refactoring
+public class Scope {
 
     //TODO: fix like env with enclosing
     private final List<String> ids;
-    private final LookupTable lookupTable;
+    private final Scope scope;
 
-    public LookupTable(List<String> ids, LookupTable superiorLookupTable) {
+    public Scope(List<String> ids, Scope superiorScope) {
         this.ids=ids;
-        this.lookupTable=superiorLookupTable;
+        this.scope = superiorScope;
     }
 
     public boolean contains(String id){
-        LookupTable superior=this;
+        Scope superior=this;
         while(superior!=null) {
             if(superior.ids.stream().anyMatch(e -> e.equals(id))) return true;
-            superior=superior.lookupTable;
+            superior=superior.scope;
         }
         return false;
     }
 
     public int recursionLevel(){
        int levels=0;
-       LookupTable superior=this;
+       Scope superior=this;
 
        while(superior!=null){
            levels++;
-           superior=superior.lookupTable;
+           superior=superior.scope;
        }
 
        return levels;
     }
 
     public void viewLookupTable(){
-        LookupTable superior=this;
+        Scope superior=this;
         for(int level=1; superior!=null; level++){
             System.out.println(level+" : "+superior.ids);
-            superior=superior.lookupTable;
+            superior=superior.scope;
         }
     }
 }

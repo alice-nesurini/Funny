@@ -43,7 +43,7 @@ public class Parser {
     }
 
     // function ::= "{" optParams optLocals optSequence "}"
-    private Expr function(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private Expr function(Scope scope) throws IOException, TokenizerException, ParserException {
         checkAndNext(TokenType.OPEN_CURLY_BRACKET, "open '{' error");
         List<String> params=optParams();
         List<String> locals=optLocals();
@@ -52,29 +52,29 @@ public class Parser {
         all.addAll(locals);
 
         //TODO: fix scope and so will be optSequence(new Scope(params, scope))
-        // LookupTable lookupTable=new LookupTable(params, null);
-        FunExpr funExpr=new FunExpr(params, locals, optSequence(new LookupTable(all, lookupTable)));
+        // Scope scope=new Scope(params, null);
+        FunExpr funExpr=new FunExpr(params, locals, optSequence(new Scope(all, scope)));
         checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error, found "+currentToken.getType());
         return funExpr;
     }
 
     // optSequence ::= ( "->" sequence )?
-    private Expr optSequence(LookupTable lookupTable) throws ParserException, IOException, TokenizerException {
+    private Expr optSequence(Scope scope) throws ParserException, IOException, TokenizerException {
         // check for arrow -> if none is provided the program is empty
         // and will return Nil
         if(!check(TokenType.ARROW)){
             return NilVal.instance();
         }
         next();
-        return sequence(lookupTable);
+        return sequence(scope);
     }
 
     // sequence ::= optAssignment ( ";" optAssignment )*
-    private Expr sequence(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private Expr sequence(Scope scope) throws IOException, TokenizerException, ParserException {
         List<Expr> exprs=new ArrayList<>();
 
         //case with one assignment (no semicolon end)
-        Expr internalExpr=optAssignment(lookupTable);
+        Expr internalExpr=optAssignment(scope);
         if(internalExpr!=null) {
             exprs.add(internalExpr);
         }
@@ -82,7 +82,7 @@ public class Parser {
         //more assignments
         while(currentToken.getType()==TokenType.SEMICOLON){
             next();
-            Expr expr=optAssignment(lookupTable);
+            Expr expr=optAssignment(scope);
             if(expr!=null) {
                 exprs.add(expr);
             }
@@ -91,17 +91,17 @@ public class Parser {
     }
 
     // optAssignment ::= assignment?
-    private Expr optAssignment(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
+    private Expr optAssignment(Scope scope) throws IOException, ParserException, TokenizerException {
         // TODO: possible not an assignment?
-        return assignment(lookupTable);
+        return assignment(scope);
     }
 
     // assignment ::= Id ( "=" | "+=" | "-=" | "*=" | "/=" | "%=" ) assignment
     //	            | logicalOr
-    private Expr assignment(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
+    private Expr assignment(Scope scope) throws TokenizerException, ParserException, IOException {
         if(check(TokenType.ID)){
             String currentId=currentToken.getStringValue();
-            if (!lookupTable.contains(currentId))
+            if (!scope.contains(currentId))
                 throw new ParserException("[parsing] identifier "+currentToken.getStringValue()+" was never declared");
             next();
             TokenType op=currentToken.getType();
@@ -113,53 +113,52 @@ public class Parser {
                 case DIVISION_EQUALS:
                 case MODULE_EQUALS:
                     next();
-                    System.out.println("DEBUG: "+op);
-                    return new SetVarExpr(currentId, assignment(lookupTable), op);
+                    return new SetVarExpr(currentId, assignment(scope), op);
                 default:
                     prev();
             }
         }
 
-        return logicalOr(lookupTable);
+        return logicalOr(scope);
     }
 
     // logicalOr ::= logicalAnd ( "||" logicalOr )?
-    private Expr logicalOr(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=logicalAnd(lookupTable);
+    private Expr logicalOr(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=logicalAnd(scope);
         if(check(TokenType.OR)){
             next();
             // binary expr contains left and right structure
-            expr=new BinaryExpr(expr, logicalOr(lookupTable), TokenType.OR);
+            expr=new BinaryExpr(expr, logicalOr(scope), TokenType.OR);
         }
         return expr;
     }
 
     // logicalAnd ::= equality ( "&&" logicalAnd )?
-    private Expr logicalAnd(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=equality(lookupTable);
+    private Expr logicalAnd(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=equality(scope);
         if(check(TokenType.AND)){
             next();
-            expr=new BinaryExpr(expr, logicalAnd(lookupTable), TokenType.AND);
+            expr=new BinaryExpr(expr, logicalAnd(scope), TokenType.AND);
         }
         return expr;
     }
 
     // equality ::= comparison ( ( "==" | "!=" ) comparison )?
-    private Expr equality(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=comparison(lookupTable);
+    private Expr equality(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=comparison(scope);
         switch(currentToken.getType()){
             case COMPARISON:
             case DIFFERENCE:
                 TokenType type=currentToken.getType();
                 next();
-                expr=new BinaryExpr(expr, comparison(lookupTable), type);
+                expr=new BinaryExpr(expr, comparison(scope), type);
         }
         return expr;
     }
 
     // comparison ::= add ( ( "<" | "<=" | ">" | ">=" ) add )?
-    private Expr comparison(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=add(lookupTable);
+    private Expr comparison(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=add(scope);
         switch(currentToken.getType()){
             case LESS:
             case LESS_EQUALS:
@@ -167,66 +166,66 @@ public class Parser {
             case GREATER_EQUALS:
                 TokenType type=currentToken.getType();
                 next();
-                expr=new BinaryExpr(expr, add(lookupTable), type);
+                expr=new BinaryExpr(expr, add(scope), type);
         }
         return expr;
     }
 
     // add ::= mult ( ( "+" | "-" ) mult )*
-    private Expr add(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=mult(lookupTable);
+    private Expr add(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=mult(scope);
         while(check(TokenType.PLUS) || check(TokenType.MINUS)){
             TokenType type=currentToken.getType();
             next();
-            expr=new BinaryExpr(expr, mult(lookupTable), type);
+            expr=new BinaryExpr(expr, mult(scope), type);
         }
         return expr;
     }
 
     // mult ::= unary ( ( "*" | "/" | "%" ) unary )*
-    private Expr mult(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=unary(lookupTable);
+    private Expr mult(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=unary(scope);
         while(isMult()) {
             TokenType type = currentToken.getType();
             next();
-            expr = new BinaryExpr(expr, unary(lookupTable), type);
+            expr = new BinaryExpr(expr, unary(scope), type);
         }
         return expr;
     }
 
     // unary ::= ( "+" | "-" | "!" ) unary
     //	        | postfix
-    private Expr unary(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private Expr unary(Scope scope) throws IOException, TokenizerException, ParserException {
         TokenType op=currentToken.getType();
         switch(op) {
             case PLUS:
             case MINUS:
             case NOT:
                 next();
-                return new UnaryExpr(op, unary(lookupTable));
+                return new UnaryExpr(op, unary(scope));
         }
-        return postfix(lookupTable);
+        return postfix(scope);
     }
 
     // postfix ::= primary args*
-    private Expr postfix(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
-        Expr expr=primary(lookupTable);
+    private Expr postfix(Scope scope) throws IOException, TokenizerException, ParserException {
+        Expr expr=primary(scope);
         while(check(TokenType.OPEN_ROUND_BRACKET)){
-            expr=new InvokeExpr(expr, args(lookupTable));
+            expr=new InvokeExpr(expr, args(scope));
         }
         return expr;
     }
 
     // args ::= "(" ( sequence ( "," sequence )* )? ")"
-    private ExprList args(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
+    private ExprList args(Scope scope) throws TokenizerException, ParserException, IOException {
         List<Expr> sequence=new ArrayList<>();
         checkAndNext(TokenType.OPEN_ROUND_BRACKET,"expected (");
         if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
-            sequence.add(sequence(lookupTable));
+            sequence.add(sequence(scope));
 
             while(check(TokenType.COMMA)){
                 next();
-                sequence.add(sequence(lookupTable));
+                sequence.add(sequence(scope));
             }
             checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "expected )");
         }
@@ -240,7 +239,7 @@ public class Parser {
     //	            | cond
     //	            | loop
     //	            | print
-    private Expr primary(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private Expr primary(Scope scope) throws IOException, TokenizerException, ParserException {
         switch(currentToken.getType()){
             case NUM:
                 return num();
@@ -252,48 +251,48 @@ public class Parser {
             case STRING:
                 return string();
             case ID:
-                return getId(lookupTable);
+                return getId(scope);
             case OPEN_CURLY_BRACKET:
-                // return new InvokeExpr(function(lookupTable))
-                return function(lookupTable);
+                // return new InvokeExpr(function(scope))
+                return function(scope);
             case OPEN_ROUND_BRACKET:
-                return subsequence(lookupTable);
+                return subsequence(scope);
             case IF:
             case IFNOT:
-                return cond(lookupTable);
+                return cond(scope);
             case WHILE:
             case WHILENOT:
-                return loop(lookupTable);
+                return loop(scope);
             case PRINT:
             case PRINTLN:
-                return print(lookupTable);
+                return print(scope);
         }
         return null;
     }
 
     // subsequence ::= "(" sequence ")"
-    private Expr subsequence(LookupTable lookupTable) throws TokenizerException, ParserException, IOException {
+    private Expr subsequence(Scope scope) throws TokenizerException, ParserException, IOException {
         checkAndNext(TokenType.OPEN_ROUND_BRACKET, "Expected '('");
-        Expr expr=sequence(lookupTable);
+        Expr expr=sequence(scope);
         checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "Expected ')'");
         return expr;
     }
 
-    private GetVarExpr getId(LookupTable lookupTable) throws IOException, TokenizerException {
+    private GetVarExpr getId(Scope scope) throws IOException, TokenizerException {
         String id=currentToken.getStringValue();
-        lookupTable.contains(id);
+        scope.contains(id);
         next();
         return new GetVarExpr(id);
     }
 
-    private PrintExpr print(LookupTable lookupTable) throws IOException, ParserException, TokenizerException {
+    private PrintExpr print(Scope scope) throws IOException, ParserException, TokenizerException {
         TokenType type=currentToken.getType();
         next();
         // TODO: case args return null!
-        return new PrintExpr(args(lookupTable), type);
+        return new PrintExpr(args(scope), type);
     }
 
-    private WhileExpr loop(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private WhileExpr loop(Scope scope) throws IOException, TokenizerException, ParserException {
         boolean invertedLogic=check(TokenType.WHILENOT);
         boolean mustClose=false;
         next();
@@ -301,7 +300,7 @@ public class Parser {
             next();
             mustClose=true;
         }
-        Expr whileCondition=sequence(lookupTable);
+        Expr whileCondition=sequence(scope);
         if(mustClose){
             checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "A Round parenthesis was opened but never closed");
         }
@@ -309,14 +308,14 @@ public class Parser {
         Expr doActions=null;
         if(check(TokenType.DO)){
             next();
-            doActions=sequence(lookupTable);
+            doActions=sequence(scope);
         }
         WhileExpr realLoop=new WhileExpr(invertedLogic, whileCondition, doActions);
         checkAndNext(TokenType.OD, "expected od to end while statement, found "+currentToken.getType()+" "+currentToken.getStringValue());
         return realLoop;
     }
 
-    private IfExpr cond(LookupTable lookupTable) throws IOException, TokenizerException, ParserException {
+    private IfExpr cond(Scope scope) throws IOException, TokenizerException, ParserException {
         boolean invertedLogic=check(TokenType.IFNOT);
         boolean mustClose=false;
         next();
@@ -324,16 +323,16 @@ public class Parser {
             next();
             mustClose=true;
         }
-        Expr condition=sequence(lookupTable);
+        Expr condition=sequence(scope);
         if(mustClose){
             checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "A Round parenthesis was opened but never closed");
         }
 
         checkAndNext(TokenType.THEN, "expected then after if statement");
-        Expr ifActions=sequence(lookupTable);
+        Expr ifActions=sequence(scope);
         Expr elseActions=null;
         if(check(TokenType.ELSE)){
-            elseActions=sequence(lookupTable);
+            elseActions=sequence(scope);
         }
         IfExpr realCondition=new IfExpr(invertedLogic, condition, ifActions, elseActions);
         checkAndNext(TokenType.FI, "expected fi to end if statement");

@@ -1,6 +1,6 @@
 package structure;
 
-import java.util.List;
+// TODO: complete refactoring
 
 // Adaptive pattern = wrapper class
 public class SeqExpr extends Expr{
@@ -14,10 +14,6 @@ public class SeqExpr extends Expr{
     public int size(){
         return exprs.getExprs().size();
     }
-/*
-    public List<Expr> getExprs(){
-        return exprs;
-    }*/
 
     @Override
     public Val eval(Env env) throws InterpreterException {
@@ -27,9 +23,4 @@ public class SeqExpr extends Expr{
         }
         return val;
     }
-/*
-    // TODO: I don't think I should do this add
-    public void add(SeqExpr sequence) {
-        exprs.add(sequence);
-    }*/
 }

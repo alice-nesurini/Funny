@@ -35,7 +35,6 @@ public class BinaryExpr extends Expr{
                 return new BoolVal(left.eval(env).greaterEquals(right.eval(env)));
             case MODULE:
                 return new NumVal((left.eval(env).checkNum()).getValue().remainder((right.eval(env).checkNum()).getValue()));
-                // TODO: impl. comparison operation
             default:
                 return NilVal.instance();
         }

@@ -9,9 +9,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LookupTableTest {
+class ScopeTest {
 
-    private LookupTable lookupTable;
+    private Scope scope;
 
     @Test
     void add() {
@@ -20,13 +20,13 @@ class LookupTableTest {
         Token tokenName=new Token(TokenType.ID, "name");
         ids.add(tokenVar.getStringValue());
         ids.add(tokenName.getStringValue());
-        lookupTable=new LookupTable(ids, null);
+        scope =new Scope(ids, null);
 
-        assertTrue(lookupTable.contains("var"));
-        assertTrue(lookupTable.contains("name"));
-        assertFalse(lookupTable.contains("notAVariable"));
-        assertEquals(1, lookupTable.recursionLevel());
-        lookupTable.viewLookupTable();
+        assertTrue(scope.contains("var"));
+        assertTrue(scope.contains("name"));
+        assertFalse(scope.contains("notAVariable"));
+        assertEquals(1, scope.recursionLevel());
+        scope.viewLookupTable();
     }
 
     @Test
@@ -36,18 +36,18 @@ class LookupTableTest {
         Token tokenName=new Token(TokenType.ID, "name");
         ids.add(tokenVar.getStringValue());
         ids.add(tokenName.getStringValue());
-        lookupTable=new LookupTable(ids, null);
+        scope =new Scope(ids, null);
 
         List<String> internalIds=new ArrayList<>();
         internalIds.add(new Token(TokenType.ID, "x").getStringValue());
-        LookupTable internalLookupTable = new LookupTable(internalIds, lookupTable);
+        Scope internalScope = new Scope(internalIds, scope);
 
-        internalLookupTable.viewLookupTable();
+        internalScope.viewLookupTable();
 
-        assertTrue(internalLookupTable.contains("var"));
-        assertTrue(internalLookupTable.contains("name"));
-        assertTrue(internalLookupTable.contains("x"));
-        assertFalse(internalLookupTable.contains("notAVariable"));
-        assertEquals(2, internalLookupTable.recursionLevel());
+        assertTrue(internalScope.contains("var"));
+        assertTrue(internalScope.contains("name"));
+        assertTrue(internalScope.contains("x"));
+        assertFalse(internalScope.contains("notAVariable"));
+        assertEquals(2, internalScope.recursionLevel());
     }
 }

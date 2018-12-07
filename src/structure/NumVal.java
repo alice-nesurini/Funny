@@ -6,8 +6,6 @@ public class NumVal extends Val {
 
     private BigDecimal value;
 
-    //TODO: add operation like eq, minus
-
     public NumVal(BigDecimal value) {
         this.value=value;
     }
@@ -74,6 +72,11 @@ public class NumVal extends Val {
 
     public Val negate() {
         value=value.negate();
+        return this;
+    }
+
+    public Val plus() {
+        value=value.plus();
         return this;
     }
 }

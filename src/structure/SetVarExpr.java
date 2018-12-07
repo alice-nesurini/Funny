@@ -19,7 +19,6 @@ public class SetVarExpr extends Expr {
         switch (op) {
             case EQUALS:
                 return env.add(id, value.eval(env));
-            // TODO: implement assignments
             case MINUS_EQUALS:
                 return env.add(id, env.get(id).subtract(value.eval(env)));
             case PLUS_EQUALS:

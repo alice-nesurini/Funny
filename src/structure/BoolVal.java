@@ -1,7 +1,7 @@
 package structure;
 
 public class BoolVal extends Val {
-    private final Boolean value;
+    private Boolean value;
 
     public BoolVal(Boolean value) {
         this.value=value;
@@ -14,6 +14,11 @@ public class BoolVal extends Val {
 
     public boolean toBool(){
         return value;
+    }
+
+    public Val negate() {
+        value=!value;
+        return this;
     }
     //TODO: implement inverted logic
 }
