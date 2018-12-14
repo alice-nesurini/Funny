@@ -9,6 +9,8 @@ import tokenizer.TokenizerException;
 import java.io.IOException;
 import java.io.StringReader;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class InterpreterTest {
     @Test
     public void simplePrintTest() throws TokenizerException, ParserException, IOException, InterpreterException {
@@ -133,15 +135,75 @@ public class InterpreterTest {
     }
 
     @Test
+    void simpleIf() throws TokenizerException, ParserException, IOException, InterpreterException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{n ->\n" +
+                "n=0;"+
+                "if n<2 then " +
+                " n=n+1;" +
+                "else" +
+                " println(\"none\");" +
+                "fi;\n" +
+                "println(n);\n" +
+                "}"));
+        Expr expr = new Parser(tokenizer).parse();
+    }
+
+    @Test
     void fibonacciRicorsive() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{fib ->\n" +
                 "    fib = {(n) ->\n" +
                 "        if n < 2 then n else fib(n - 1) + fib(n - 2) fi\n" +
                 "    };\n" +
                 "    \n" +
-                "    println(fib(40))\n" +
+                "    println(fib(30))\n" +
                 "}"));
         Expr expr = new Parser(tokenizer).parse();
     }
 
+    @Test
+    public void binaryAdderFunction() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader(("{binaryAdder ->" +
+                "binaryAdder = {(x) -> {(y) -> x + y}};\n" +
+                "println(binaryAdder(123)(234));" +
+                "}")));
+        Expr expr = new Parser(tokenizer).parse();
+    }
+
+    @Test
+    public void setteDiOtto() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader(("{a sqr x ->\n" +
+                "\n" +
+                "\tsqr = {(x) -> x * x};\n" +
+                "\tx = {(z) -> sqr};\n" +
+                "\t\n" +
+                "\tprintln(x(2)(3));\n" +
+                "\n" +
+                "    println(10 / 3);\n" +
+                "    println(20 / 3);\n" +
+                "    \n" +
+
+
+                "\tprintln({(x)->{() -> x}}(4)());\n" +
+
+                // expected not a closure
+                "\t7(8);\n" +
+
+
+                "\t\n" +
+                "    a = 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;\n" +
+                "    println(a);\n" +
+                "    println(1 / a);\n" +
+                "    println(1 / a * a);\n" +
+                "    println(1 / a * a == 1);\n" +
+                "    \n" +
+                "    println(3.27 % .7);\n" +
+                "}")));
+        assertThrows(InterpreterException.class, ()->new Parser(tokenizer).parse());
+    }
+
+    @Test
+    public void emptyPrint() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader(("{ -> print()}")));
+        Expr expr = new Parser(tokenizer).parse();
+    }
 }

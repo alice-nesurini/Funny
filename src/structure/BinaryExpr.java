@@ -2,6 +2,8 @@ package structure;
 
 import tokenizer.TokenType;
 
+import java.math.RoundingMode;
+
 public class BinaryExpr extends Expr{
 
     private final Expr left;
@@ -24,7 +26,7 @@ public class BinaryExpr extends Expr{
             case STAR:
                 return new NumVal((left.eval(env).checkNum()).getValue().multiply((right.eval(env).checkNum()).getValue()));
             case DIVISION:
-                return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue()));
+                return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue(), 100, RoundingMode.HALF_EVEN));
             case LESS_EQUALS:
                 return new BoolVal(left.eval(env).lessEquals(right.eval(env)));
             case LESS:

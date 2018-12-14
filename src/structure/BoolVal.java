@@ -20,5 +20,4 @@ public class BoolVal extends Val {
         value=!value;
         return this;
     }
-    //TODO: implement inverted logic
 }

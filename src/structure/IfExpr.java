@@ -16,7 +16,20 @@ public class IfExpr extends Expr{
     }
 
     @Override
-    public Val eval(Env env) {
-        return null;
+    public Val eval(Env env) throws InterpreterException {
+        Val ifCondition;
+        if(invertedLogic){
+            ifCondition=condition.eval(env).checkBool().negate();
+        }
+        else{
+            ifCondition=condition.eval(env).checkBool();
+        }
+
+        if(ifCondition.checkBool().toBool()){
+            return ifActions.eval(env);
+        }
+        else{
+            return elseActions.eval(env);
+        }
     }
 }

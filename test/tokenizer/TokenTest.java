@@ -1,6 +1,10 @@
 package tokenizer;
 
 import org.junit.jupiter.api.Test;
+import parser.Parser;
+import parser.ParserException;
+import structure.Expr;
+import structure.InterpreterException;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -620,5 +624,58 @@ public class TokenTest{
         assertEquals(TokenType.MINUS, tokenizer.next().getType());
         assertEquals(TokenType.NUM, tokenizer.next().getType());
         assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+    }
+
+    @Test
+    void fibonacciRicorsive() throws TokenizerException, ParserException, IOException, InterpreterException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{fib ->\n" +
+                "    fib = {(n) ->\n" +
+                "        if n < 2 then n else fib(n - 1) + fib(n - 2) fi\n" +
+                "    };\n" +
+                "    \n" +
+                "    println(fib(40))\n" +
+                "}"));
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
+        assertEquals(TokenType.IF, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.LESS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.THEN, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.ELSE, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.MINUS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.PLUS, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.MINUS, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.FI, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
+
+        assertEquals(TokenType.PRINTLN, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ID, tokenizer.next().getType());
+        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.NUM, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
 }

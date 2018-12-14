@@ -1,5 +1,6 @@
 package parser;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import structure.*;
 import structure.BoolVal;
 import structure.NumVal;
@@ -51,8 +52,6 @@ public class Parser {
         all.addAll(params);
         all.addAll(locals);
 
-        //TODO: fix scope and so will be optSequence(new Scope(params, scope))
-        // Scope scope=new Scope(params, null);
         FunExpr funExpr=new FunExpr(params, locals, optSequence(new Scope(all, scope)));
         checkAndNext(TokenType.CLOSE_CURLY_BRACKET, "close '}' error, found "+currentToken.getType());
         return funExpr;
@@ -223,12 +222,13 @@ public class Parser {
         if(!check(TokenType.CLOSE_ROUND_BRACKET)) {
             sequence.add(sequence(scope));
 
-            while(check(TokenType.COMMA)){
+            while (check(TokenType.COMMA)) {
                 next();
                 sequence.add(sequence(scope));
             }
-            checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "expected )");
         }
+        checkAndNext(TokenType.CLOSE_ROUND_BRACKET, "expected )");
+
         return new ExprList(sequence);
     }
 
@@ -246,7 +246,9 @@ public class Parser {
             case FALSE:
             case TRUE:
                 return bool();
-            case NIL:
+                //TODO: NIL token doesn't exist
+            case CLOSE_ROUND_BRACKET:
+                System.out.println("NIL");
                 return nil();
             case STRING:
                 return string();
@@ -332,10 +334,11 @@ public class Parser {
         Expr ifActions=sequence(scope);
         Expr elseActions=null;
         if(check(TokenType.ELSE)){
+            next();
             elseActions=sequence(scope);
         }
         IfExpr realCondition=new IfExpr(invertedLogic, condition, ifActions, elseActions);
-        checkAndNext(TokenType.FI, "expected fi to end if statement");
+        checkAndNext(TokenType.FI, "expected fi to end if statement, found "+currentToken.getStringValue());
         return realCondition;
     }
 
