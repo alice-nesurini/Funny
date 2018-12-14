@@ -112,4 +112,36 @@ public class InterpreterTest {
         expr.eval(null);
     }
 
+    @Test
+    public void fibonacciIteractive() throws TokenizerException, ParserException, IOException, InterpreterException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{fib ->\n" +
+                "    fib = {(n) fib0 fib1 fib ->\n" +
+                "        fib0 = 1;\n" +
+                "        fib1 = 0;\n" +
+                "        while n > 0 do\n" +
+                "            fib = fib0 + fib1;\n" +
+                "            fib0 = fib1;\n" +
+                "            fib1 = fib;\n" +
+                "            n -= 1\n" +
+                "        od;\n" +
+                "        fib1\n" +
+                "    };\n" +
+                "    \n" +
+                "    println(fib(10000))\n" +
+                "}"));
+        Expr expr = new Parser(tokenizer).parse();
+    }
+
+    @Test
+    void fibonacciRicorsive() throws TokenizerException, ParserException, IOException, InterpreterException {
+        final Tokenizer tokenizer = new Tokenizer(new StringReader("{fib ->\n" +
+                "    fib = {(n) ->\n" +
+                "        if n < 2 then n else fib(n - 1) + fib(n - 2) fi\n" +
+                "    };\n" +
+                "    \n" +
+                "    println(fib(40))\n" +
+                "}"));
+        Expr expr = new Parser(tokenizer).parse();
+    }
+
 }

@@ -98,7 +98,8 @@ public class ParserTest {
         //expr.getExprs();
     }
 
-    @Test public void printParam() throws TokenizerException, ParserException, IOException, InterpreterException {
+    @Test
+    public void printParam() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(param) ->" +
                 "param=5;"+
                 "print(param);"+
