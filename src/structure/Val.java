@@ -7,7 +7,7 @@ public abstract class Val extends Expr {
     }
 
     public StringVal checkString() throws InterpreterException {
-        throw new InterpreterException("Not a string");
+        throw new InterpreterException("Not a string, type: "+this);
     }
 
     public NumVal checkNum() throws InterpreterException {

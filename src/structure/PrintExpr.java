@@ -16,10 +16,10 @@ public class PrintExpr extends Expr{
     public Val eval(Env env) throws InterpreterException {
         for(int i=0; i<sequence.getExprs().size(); i++){
             System.out.print(sequence.getExprs().get(i).eval(env));
-            if(type==TokenType.PRINTLN){
-                // add empty line
-                System.out.print(System.lineSeparator());
-            }
+        }
+        if(type==TokenType.PRINTLN){
+            // add empty line
+            System.out.print(System.lineSeparator());
         }
         return NilVal.instance();
     }

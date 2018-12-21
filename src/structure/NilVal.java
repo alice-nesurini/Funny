@@ -14,4 +14,9 @@ public class NilVal extends Val {
         }
         return nil;
     }
+
+    @Override
+    public String toString() {
+        return "Nil";
+    }
 }

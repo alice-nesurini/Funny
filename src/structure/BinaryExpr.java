@@ -40,14 +40,24 @@ public class BinaryExpr extends Expr{
                     return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));
                 }
                 catch(InterpreterException e){
-                    return new StringVal((left.eval(env).checkString().add(right.eval(env).checkString())).toString());
+                    try {
+                        return new StringVal((left.eval(env).checkString().add(right.eval(env).checkString())).toString());
+                    }
+                    catch(InterpreterException ex){
+                        return new StringVal((left.eval(env).checkClosure().add(right.eval(env).checkString())).toString());
+                    }
                 }
             case MINUS:
                 return new NumVal((left.eval(env).checkNum()).getValue().subtract((right.eval(env).checkNum()).getValue()));
             case STAR:
                 return new NumVal((left.eval(env).checkNum()).getValue().multiply((right.eval(env).checkNum()).getValue()));
             case DIVISION:
-                return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue(), 100, RoundingMode.HALF_EVEN));
+                try{
+                    return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue()));
+                }
+                catch(ArithmeticException e){
+                    return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue(), 100, RoundingMode.HALF_EVEN));
+                }
             case LESS_EQUALS:
                 return new BoolVal(left.eval(env).lessEquals(right.eval(env)));
             case LESS:

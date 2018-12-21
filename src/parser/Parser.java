@@ -1,6 +1,5 @@
 package parser;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import structure.*;
 import structure.BoolVal;
 import structure.NumVal;

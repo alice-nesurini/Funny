@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import parser.Parser;
 import parser.ParserException;
 import structure.*;
+import tokenizer.Token;
 import tokenizer.Tokenizer;
 import tokenizer.TokenizerException;
 
@@ -248,8 +249,8 @@ public class InterpreterTest {
                 "a=\"Hello\";" +
                 "b=\"Hello!\";" +
                 "c=\"Hello\";"+
-                "println(a==b, \"Deve essere False!\n\");"+
-                "println(a==c, \"Deve essere True!\");"+
+                "println(a==b, \" Deve essere False!\n\");"+
+                "println(a==c, \" Deve essere True!\");"+
                 "}"));
         Launcher.launch(tokenizer);
     }
@@ -311,6 +312,26 @@ public class InterpreterTest {
                 "    };\n" +
                 "\n" +
                 "    println(change(10, 0))\n" +
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void whileFalseTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a->" +
+                "a=true;" +
+                "while(!a) do " +
+                "od"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void dividePrecisionTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a->" +
+                "a=16;" +
+                "a=a/4;"+
+                "println(a)"+
                 "}"));
         Launcher.launch(tokenizer);
     }
