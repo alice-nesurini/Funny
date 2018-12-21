@@ -246,9 +246,7 @@ public class Parser {
             case FALSE:
             case TRUE:
                 return bool();
-                //TODO: NIL token doesn't exist
-            case CLOSE_ROUND_BRACKET:
-                System.out.println("NIL");
+            case NIL:
                 return nil();
             case STRING:
                 return string();

@@ -1,18 +1,11 @@
 package structure;
 
-// TODO: complete refactoring
-
 // Adaptive pattern = wrapper class
 public class SeqExpr extends Expr{
     private final ExprList exprs;
 
     public SeqExpr(ExprList exprs) {
         this.exprs=exprs;
-    }
-
-    //TODO: public because of testing
-    public int size(){
-        return exprs.getExprs().size();
     }
 
     @Override

@@ -278,8 +278,8 @@ public class Tokenizer{
                     commentBuilder=new StringBuilder();
                 }
 
-                //case the comment is never closed
-                //**ONLY** case when the tokenizer throws an exception
+                // case the comment is never closed
+                // case when the tokenizer throws an exception
                 currentChar=reader.read();
                 if(currentChar==-1){
                     throw new TokenizerException("[comment] A comment was opened and never closed");
@@ -291,7 +291,8 @@ public class Tokenizer{
             reader.reset();
             //return;
         }
-        reader.reset();
+        // fail testNextLambda
+        // reader.reset();
         // 2 reader.reset();
         skipSpaces();
         //internalNext();

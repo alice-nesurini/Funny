@@ -1,7 +1,5 @@
 package structure;
 
-// TODO: missing implementation
-
 public class IfExpr extends Expr{
     private final boolean invertedLogic;
     private final Expr condition;
@@ -26,6 +24,10 @@ public class IfExpr extends Expr{
         }
 
         if(ifCondition.checkBool().toBool()){
+            // if ifActions are null
+            if(ifActions==null) {
+                return NilVal.instance();
+            }
             return ifActions.eval(env);
         }
         else{

@@ -2,43 +2,25 @@ package parser;
 
 import java.util.List;
 
-// TODO: complete refactoring
 public class Scope {
 
     private final List<String> ids;
     private final Scope enclosing;
 
-    public Scope(List<String> ids, Scope superiorScope) {
+    public Scope(List<String> ids, Scope enclosing) {
         this.ids=ids;
-        this.enclosing = superiorScope;
+        this.enclosing = enclosing;
     }
 
     public boolean contains(String id){
-        Scope superior=this;
-        while(superior!=null) {
-            if(superior.ids.stream().anyMatch(e -> e.equals(id))) return true;
-            superior=superior.enclosing;
+        if(enclosing!=null){
+            return ids.contains(id) || enclosing.contains(id);
         }
-        return false;
+        return ids.contains(id);
     }
 
-    public int recursionLevel(){
-       int levels=0;
-       Scope superior=this;
-
-       while(superior!=null){
-           levels++;
-           superior=superior.enclosing;
-       }
-
-       return levels;
-    }
-
-    public void viewLookupTable(){
-        Scope superior=this;
-        for(int level=1; superior!=null; level++){
-            System.out.println(level+" : "+superior.ids);
-            superior=superior.enclosing;
-        }
+    // TODO: need add(String) method?
+    public void add(String id){
+        ids.add(id);
     }
 }

@@ -260,7 +260,7 @@ public class InterpreterTest {
                 "a=\"Hello\";" +
                 "b=\"Hello!\";" +
                 "c=\"Hello\";"+
-                "if a==c || null then" +
+                "if a==c || nil then" +
                 "   print(a+\" \"+b+\" \"+c);"+
                 "fi"+
                 "}"));
@@ -270,6 +270,48 @@ public class InterpreterTest {
     @Test
     public void simpleCommentTest() throws TokenizerException, ParserException, InterpreterException, IOException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{->/*a/*no*/a*/print();}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void coinChangeTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{coin change ->\n" +
+                "    coin = {(index) ->\n" +
+                "        if index == 0\n" +
+                "        then 500\n" +
+                "        else if index == 1\n" +
+                "            then 200\n" +
+                "            else if index == 2\n" +
+                "                then 100\n" +
+                "                else if index == 3\n" +
+                "                    then 50\n" +
+                "                    else if index == 4\n" +
+                "                        then 20\n" +
+                "                        else if index == 5\n" +
+                "                            then 10\n" +
+                "                            else if index == 6\n" +
+                "                                then 5\n" +
+                "                                fi\n" +
+                "                            fi\n" +
+                "                        fi\n" +
+                "                    fi\n" +
+                "                fi\n" +
+                "            fi\n" +
+                "        fi\n" +
+                "    };\n" +
+                "\n" +
+                "    change = {(amount index) ->\n" +
+                "        if amount == 0 then 1\n" +
+                "        else if amount < 0 then 0\n" +
+                "            else if index >= 7 then 0\n" +
+                "                else change(amount, index + 1) + change(amount - coin(index), index)\n" +
+                "                fi\n" +
+                "            fi\n" +
+                "        fi\n" +
+                "    };\n" +
+                "\n" +
+                "    println(change(10, 0))\n" +
+                "}"));
         Launcher.launch(tokenizer);
     }
 }

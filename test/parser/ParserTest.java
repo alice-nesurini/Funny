@@ -31,12 +31,10 @@ public class ParserTest {
         final Tokenizer tokAssignments=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=-0.6; param=5;}"));
         parser=new Parser(tokAssignments);
         SeqExpr seq=(SeqExpr)parser.parse();
-        assertEquals(2, (seq).size());
 
         final Tokenizer tokNoEnd=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=5e-4; param=.5}"));
         parser=new Parser(tokNoEnd);
         seq=(SeqExpr)parser.parse();
-        assertEquals(2, (seq).size());
     }
 
     @Test
@@ -55,7 +53,6 @@ public class ParserTest {
     public void testBooleanAssignment() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true}"));
         Expr expr=new Parser(tokenizer).parse();
-        //assertEquals(1, (expr).size());
 
         final Tokenizer tokenizerThrows=new Tokenizer(new StringReader("{(myVar param id other) -> notExistent=false}"));
         Parser parser=new Parser(tokenizerThrows);
@@ -64,20 +61,17 @@ public class ParserTest {
         final Tokenizer tokAssignments=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true; param=false;}"));
         parser=new Parser(tokAssignments);
         SeqExpr seq=(SeqExpr)parser.parse();
-        assertEquals(2, (seq).size());
 
         final Tokenizer tokNoEnd=new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true;" +
                 " param=false; id=true}"));
         parser=new Parser(tokNoEnd);
         seq=(SeqExpr)parser.parse();
-        assertEquals(3, (seq).size());
     }
 
     @Test
     public void testLogicalOr() throws TokenizerException, ParserException, IOException, InterpreterException {
         final Tokenizer tokenizer = new Tokenizer(new StringReader("{(myVar param id other) -> myVar=true||false||false}"));
         Expr expr = new Parser(tokenizer).parse();
-        //assertEquals(1, (expr).size());
     }
 
     @Test
