@@ -35,7 +35,7 @@ public class BinaryExpr extends Expr{
                 }
                 return new BoolVal(true);
             case PLUS:
-                // TODO without try and catch?
+                // TODO without nested try and catch?
                 try{
                     return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));
                 }
@@ -52,6 +52,8 @@ public class BinaryExpr extends Expr{
             case STAR:
                 return new NumVal((left.eval(env).checkNum()).getValue().multiply((right.eval(env).checkNum()).getValue()));
             case DIVISION:
+                // try exact division
+                // if exact quotient cannot be represented, ArithmeticException is thrown
                 try{
                     return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue()));
                 }

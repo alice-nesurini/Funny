@@ -54,6 +54,10 @@ public abstract class Val extends Expr {
         throw new InterpreterException("Not numbers Can't apply multiplication (*=)");
     }
 
+    public Val divide(Val eval) throws InterpreterException {
+        throw new InterpreterException("Not numbers can't apply division (/=)");
+    }
+
     public Boolean comparison(Val val) throws InterpreterException {
         throw new InterpreterException("Can't apply comparison (==)");
     }

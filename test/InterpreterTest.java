@@ -335,4 +335,18 @@ public class InterpreterTest {
                 "}"));
         Launcher.launch(tokenizer);
     }
+
+    @Test
+    public void divideEqualsTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a b->" +
+                "a=10;" +
+                "b=11;"+
+                "a/=2;"+
+                "b/=3;"+
+                "println(\"a value: \", a);"+
+                "println(\"b value: \", b);"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
 }

@@ -1,6 +1,7 @@
 package structure;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class NumVal extends Val {
 
@@ -67,6 +68,17 @@ public class NumVal extends Val {
     @Override
     public Val star(Val val) throws InterpreterException {
         this.value=value.multiply(val.checkNum().getValue());
+        return this;
+    }
+
+    @Override
+    public Val divide(Val val) throws InterpreterException {
+        try {
+            value = value.divide(val.checkNum().getValue());
+        }
+        catch(ArithmeticException e){
+            value=value.divide(val.checkNum().getValue(), 100, RoundingMode.HALF_EVEN);
+        }
         return this;
     }
 
