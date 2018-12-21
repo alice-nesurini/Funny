@@ -15,13 +15,18 @@ public class StringVal extends Val {
 
     // two string can be concatenated using '+'
     // so the Val plus method is overriden
-    //TODO: add the method to override
-    public Val plus(Val val) throws InterpreterException {
+    @Override
+    public Val add(Val val) throws InterpreterException {
         return new StringVal(this.toString()+val.checkString().toString());
     }
 
     @Override
     public String toString() {
         return string;
+    }
+
+    @Override
+    public Boolean comparison(Val val) throws InterpreterException {
+        return this.string.equals(val.checkString().string);
     }
 }

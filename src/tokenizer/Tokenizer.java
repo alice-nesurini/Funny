@@ -260,16 +260,21 @@ public class Tokenizer{
         reader.mark(2);
         if(reader.read()=='/' && reader.read()=='*'){
             //there is a comment
+            System.out.println("OPEN");
             numberOfComment++;
             while(numberOfComment!=0){
+                // 2 reader.mark(1);
                 //found close comment
                 if(commentBuilder.toString().contains("*/")){
                     numberOfComment--;
+                    System.out.println("CLOSE");
+                    System.out.println("Builder "+commentBuilder.toString());
                     commentBuilder=new StringBuilder();
                 }
                 //found open comment
                 else if(commentBuilder.toString().contains("/*")){
                     numberOfComment++;
+                    System.out.println("OPEN int");
                     commentBuilder=new StringBuilder();
                 }
 
@@ -284,8 +289,12 @@ public class Tokenizer{
         }
         else{
             reader.reset();
+            //return;
         }
+        reader.reset();
+        // 2 reader.reset();
         skipSpaces();
+        //internalNext();
     }
 
     private Token checkAnd() throws IOException {

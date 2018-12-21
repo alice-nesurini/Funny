@@ -53,4 +53,8 @@ public abstract class Val extends Expr {
     public Val star(Val val) throws InterpreterException {
         throw new InterpreterException("Not numbers Can't apply multiplication (*=)");
     }
+
+    public Boolean comparison(Val val) throws InterpreterException {
+        throw new InterpreterException("Can't apply comparison (==)");
+    }
 }

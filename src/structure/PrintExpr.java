@@ -18,7 +18,7 @@ public class PrintExpr extends Expr{
             System.out.print(sequence.getExprs().get(i).eval(env));
             if(type==TokenType.PRINTLN){
                 // add empty line
-                System.out.print("\n");
+                System.out.print(System.lineSeparator());
             }
         }
         return NilVal.instance();

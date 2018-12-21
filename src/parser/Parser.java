@@ -399,6 +399,7 @@ public class Parser {
     private void next() throws IOException, TokenizerException {
         pastToken=currentToken;
         currentToken=tokenizer.next();
+        // System.out.println("CONSUMED: "+currentToken.getType()+" "+currentToken.getStringValue());
     }
 
     private boolean check(TokenType type) {

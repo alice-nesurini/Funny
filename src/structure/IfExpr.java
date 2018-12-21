@@ -29,6 +29,9 @@ public class IfExpr extends Expr{
             return ifActions.eval(env);
         }
         else{
+            if(elseActions==null){
+                return NilVal.instance();
+            }
             return elseActions.eval(env);
         }
     }

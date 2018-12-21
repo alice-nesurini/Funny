@@ -6,6 +6,8 @@ import structure.*;
 import tokenizer.Tokenizer;
 import tokenizer.TokenizerException;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -181,22 +183,19 @@ public class InterpreterTest {
                 "    println(10 / 3);\n" +
                 "    println(20 / 3);\n" +
                 "    \n" +
-
-
                 "\tprintln({(x)->{() -> x}}(4)());\n" +
-
-                // expected not a closure
-                "\t7(8);\n" +
-
-
                 "\t\n" +
                 "    a = 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;\n" +
                 "    println(a);\n" +
                 "    println(1 / a);\n" +
                 "    println(1 / a * a);\n" +
                 "    println(1 / a * a == 1);\n" +
+                "    println(\"alice\"==\"alice\");\n" +
                 "    \n" +
                 "    println(3.27 % .7);\n" +
+
+                // expected not a closure
+                "\t7(8);\n" +
                 "}")));
         assertThrows(InterpreterException.class, ()->new Parser(tokenizer).parse());
     }
@@ -205,5 +204,72 @@ public class InterpreterTest {
     public void emptyPrint() throws TokenizerException, ParserException, InterpreterException, IOException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader(("{ -> print()}")));
         Expr expr = new Parser(tokenizer).parse();
+    }
+
+    @Test
+    public void newFunnyComplete() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("new-test.funny")));
+        Expr expr = new Parser(tokenizer).parse();
+    }
+
+    @Test
+    public void andTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a b->" +
+                "a=false;" +
+                "b=true;" +
+                "print(a&&b);"+
+                "}"));
+        new Parser(tokenizer).parse();
+    }
+
+    @Test
+    public void orTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a b->" +
+                "a=true;" +
+                "b=false;" +
+                "print(a||b);"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void concatenateStringTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a b->" +
+                "a=\"Hello \";" +
+                "b=\"World!\";" +
+                "print(a+b);"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void stringComparisionTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a b c->" +
+                "a=\"Hello\";" +
+                "b=\"Hello!\";" +
+                "c=\"Hello\";"+
+                "println(a==b, \"Deve essere False!\n\");"+
+                "println(a==c, \"Deve essere True!\");"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void ifEvaluateTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a b c->" +
+                "a=\"Hello\";" +
+                "b=\"Hello!\";" +
+                "c=\"Hello\";"+
+                "if a==c || null then" +
+                "   print(a+\" \"+b+\" \"+c);"+
+                "fi"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void simpleCommentTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{->/*a/*no*/a*/print();}"));
+        Launcher.launch(tokenizer);
     }
 }

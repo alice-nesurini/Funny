@@ -79,4 +79,9 @@ public class NumVal extends Val {
         value=value.plus();
         return this;
     }
+
+    @Override
+    public Boolean comparison(Val val) throws InterpreterException {
+       return this.value.compareTo(val.checkNum().value)==0;
+    }
 }
