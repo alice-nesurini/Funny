@@ -18,9 +18,4 @@ public class Scope {
         }
         return ids.contains(id);
     }
-
-    // TODO: need add(String) method?
-    public void add(String id){
-        ids.add(id);
-    }
 }

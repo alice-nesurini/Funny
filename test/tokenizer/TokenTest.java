@@ -5,6 +5,7 @@ import parser.Parser;
 import parser.ParserException;
 import structure.Expr;
 import structure.InterpreterException;
+import structure.Launcher;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -86,11 +87,9 @@ public class TokenTest{
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
         assertEquals("myVar", runnerToken.getStringValue());
-        assertEquals(TokenType.COMMA, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
         assertEquals("param", runnerToken.getStringValue());
-        assertEquals(TokenType.COMMA, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.ID, runnerToken.getType());
         assertEquals("result", runnerToken.getStringValue());
@@ -134,6 +133,7 @@ public class TokenTest{
         assertEquals(TokenType.COMPARISON, tokenizer.next().getType());
         assertEquals(TokenType.NUM, tokenizer.next().getType());
 
+        assertEquals(TokenType.THEN, tokenizer.next().getType());
         assertEquals(TokenType.PRINT, tokenizer.next().getType());
         assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
         runnerToken=tokenizer.next();
@@ -676,6 +676,19 @@ public class TokenTest{
         assertEquals(TokenType.NUM, tokenizer.next().getType());
         assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
         assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
+    }
+
+    @Test
+    public void commentTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("" +
+                "/* c1 */\n" +
+                "/* c2 */\n" +
+                "/* c3 */\n" +
+                "/* c4 */\n" +
+                "{->}"));
+        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
+        assertEquals(TokenType.ARROW, tokenizer.next().getType());
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
 }

@@ -11,6 +11,7 @@ import tokenizer.TokenizerException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Parser {
@@ -34,6 +35,7 @@ public class Parser {
         check(TokenType.EOS, "no valid end of stream found");
 
 
+
         // DEBUG
         // return expr;
 
@@ -44,6 +46,12 @@ public class Parser {
 
     // function ::= "{" optParams optLocals optSequence "}"
     private Expr function(Scope scope) throws IOException, TokenizerException, ParserException {
+
+        // check if the file is empty
+        if(check(TokenType.EOS)){
+            return new FunExpr(Arrays.asList(), Arrays.asList(), NilVal.instance());
+        }
+
         checkAndNext(TokenType.OPEN_CURLY_BRACKET, "open '{' error");
         List<String> params=optParams();
         List<String> locals=optLocals();
@@ -90,7 +98,6 @@ public class Parser {
 
     // optAssignment ::= assignment?
     private Expr optAssignment(Scope scope) throws IOException, ParserException, TokenizerException {
-        // TODO: possible not an assignment?
         return assignment(scope);
     }
 

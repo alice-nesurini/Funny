@@ -12,7 +12,7 @@ public class Frame {
             throw new IllegalArgumentException("the params/locals/argVals should be of type List");
         }
         if(params.size()!=argVals.size()){
-            throw new IllegalArgumentException("params size doesn't much arg values");
+            throw new IllegalArgumentException("params size doesn't match arg values");
         }
         // I parametri vengono inizializzati coi valori degli argomenti,
         // le variabili locali vengono inizializzate a nil.

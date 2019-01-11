@@ -46,7 +46,7 @@ public class FunnyTest {
     }
 
     // the while true test...
-    @Disabled
+    @Disabled("Contains while true, enable only to test that")
     @Test
     public void trueFalseUnderscoreTest() throws TokenizerException, ParserException, InterpreterException, IOException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("{_true _false _if ->\n" +

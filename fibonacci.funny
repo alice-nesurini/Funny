@@ -1,8 +1,6 @@
 /* a /* a/*
  * Fibonacci sequence*/
- */
- */
- //inline comment
+ */ */
 
 
 {fib ->
@@ -17,8 +15,10 @@
             n -= 1;
         od;
         /* non da problemi */
+        /* c2 */
+        /* c3 */
         fib1
-         //inline comment
+
     };
 
     println(fib(10000));

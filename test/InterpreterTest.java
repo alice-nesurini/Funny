@@ -1,9 +1,7 @@
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import parser.Parser;
 import parser.ParserException;
 import structure.*;
-import tokenizer.Token;
 import tokenizer.Tokenizer;
 import tokenizer.TokenizerException;
 
@@ -270,7 +268,7 @@ public class InterpreterTest {
 
     @Test
     public void simpleCommentTest() throws TokenizerException, ParserException, InterpreterException, IOException {
-        final Tokenizer tokenizer=new Tokenizer(new StringReader("{->/*a/*no*/a*/print();}"));
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{->/*a/*no*/a*/ print();}"));
         Launcher.launch(tokenizer);
     }
 
@@ -349,4 +347,31 @@ public class InterpreterTest {
         Launcher.launch(tokenizer);
     }
 
+
+    @Test
+    public void nilTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{a->" +
+                "a=nil;" +
+                "println(\"a value: \", a);"+
+                "}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void emptyParamAndProgramTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{->}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void emptyProgramTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader("{}"));
+        Launcher.launch(tokenizer);
+    }
+
+    @Test
+    public void emptyFileTest() throws TokenizerException, ParserException, InterpreterException, IOException {
+        final Tokenizer tokenizer=new Tokenizer(new StringReader(""));
+        Launcher.launch(tokenizer);
+    }
 }
