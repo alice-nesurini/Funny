@@ -294,7 +294,6 @@ public class Parser {
     private PrintExpr print(Scope scope) throws IOException, ParserException, TokenizerException {
         TokenType type=currentToken.getType();
         next();
-        // TODO: case args return null!
         return new PrintExpr(args(scope), type);
     }
 

@@ -35,7 +35,6 @@ public class BinaryExpr extends Expr{
                 }
                 return new BoolVal(true);
             case PLUS:
-                // TODO without nested try and catch?
                 try{
                     return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));
                 }
@@ -72,6 +71,8 @@ public class BinaryExpr extends Expr{
                 return new NumVal((left.eval(env).checkNum()).getValue().remainder((right.eval(env).checkNum()).getValue()));
             case COMPARISON:
                 return new BoolVal(left.eval(env).comparison(right.eval(env)));
+            case DIFFERENCE:
+                return new BoolVal(left.eval(env).difference(right.eval(env)));
             default:
                 return NilVal.instance();
         }

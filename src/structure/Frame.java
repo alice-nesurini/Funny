@@ -32,9 +32,6 @@ public class Frame {
     }
 
     public Val get(String id){
-        if(id==null || id.isEmpty()){
-            throw new IllegalArgumentException("id can't be null/empty");
-        }
         Val val=map.get(id);
         return val==null?NilVal.instance():val;
     }

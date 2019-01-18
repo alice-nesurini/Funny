@@ -57,7 +57,6 @@ class FrameTest{
         Frame frame=new Frame(params, new ArrayList<>(), argVals);
         Frame frameSpy=spy(frame);
         frameSpy.add("param", mock(Val.class));
-        // TODO: can't verify map.put
         // verify(frameSpy).map.put(any(String.class), any(Val.class));
     }
 

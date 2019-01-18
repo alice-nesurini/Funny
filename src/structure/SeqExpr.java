@@ -10,7 +10,7 @@ public class SeqExpr extends Expr{
 
     @Override
     public Val eval(Env env) throws InterpreterException {
-        Val val=null;
+        Val val=NilVal.instance();
         for(int i=0; i<exprs.getExprs().size(); i++) {
             val=exprs.getExprs().get(i).eval(env);
         }

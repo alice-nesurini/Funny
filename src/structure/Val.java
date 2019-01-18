@@ -61,4 +61,8 @@ public abstract class Val extends Expr {
     public Boolean comparison(Val val) throws InterpreterException {
         throw new InterpreterException("Can't apply comparison (==)");
     }
+
+    public Boolean difference(Val eval) throws InterpreterException {
+        throw new InterpreterException("Can't apply difference (!=)");
+    }
 }

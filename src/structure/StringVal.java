@@ -15,6 +15,7 @@ public class StringVal extends Val {
 
     // two string can be concatenated using '+'
     // so the Val plus method is overriden
+    // TODO : add anche contrario in Val
     @Override
     public Val add(Val val) throws InterpreterException {
         return new StringVal(this.toString()+val.checkString().toString());
@@ -28,5 +29,10 @@ public class StringVal extends Val {
     @Override
     public Boolean comparison(Val val) throws InterpreterException {
         return this.string.equals(val.checkString().string);
+    }
+
+    @Override
+    public Boolean difference(Val val) throws InterpreterException {
+        return !this.string.equals(val.checkString().string);
     }
 }

@@ -1,7 +1,7 @@
 package structure;
 
 public class BoolVal extends Val {
-    private Boolean value;
+    private final Boolean value;
 
     public BoolVal(Boolean value) {
         this.value=value;
@@ -17,8 +17,7 @@ public class BoolVal extends Val {
     }
 
     public Val negate() {
-        value=!value;
-        return this;
+        return new BoolVal(!value);
     }
 
     public Boolean and(BoolVal val){
@@ -32,6 +31,11 @@ public class BoolVal extends Val {
     @Override
     public Boolean comparison(Val val) throws InterpreterException {
         return this.value==val.checkBool().value;
+    }
+
+    @Override
+    public Boolean difference(Val val) throws InterpreterException {
+        return this.value!=val.checkBool().value;
     }
 
     @Override

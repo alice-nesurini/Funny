@@ -95,10 +95,10 @@ public class Tokenizer {
     private void skipGarbage() throws IOException, TokenizerException {
         skipSpaces();
 
+        //skipAllComment(0);
         // to make it work old comment de-comment next two lines
-        //skipComment();
-        //skipInline();
-        skipAllComment(0);
+        skipComment();
+        skipInline();
     }
 
     private void skipInline() throws IOException, TokenizerException {

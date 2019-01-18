@@ -1,8 +1,8 @@
-{ myVar param result ->
-    myVar=2.3;
-    param=5.21;
-    result=myVar+param;
-    if result==7.51 then
-        print("The result: ", result);
+{ x ->
+    x=0;
+    if x != 0 && 1/x == 1 then
+        println("ok");
+    else
+        println("ko");
     fi
 }

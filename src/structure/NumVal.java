@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 public class NumVal extends Val {
 
-    private BigDecimal value;
+    private final BigDecimal value;
 
     public NumVal(BigDecimal value) {
         this.value=value;
@@ -49,51 +49,51 @@ public class NumVal extends Val {
 
     @Override
     public Val subtract(Val val) throws InterpreterException {
-        this.value=value.subtract(val.checkNum().getValue());
-        return this;
+        return new NumVal(value.subtract(val.checkNum().getValue()));
     }
 
     @Override
     public Val add(Val val) throws InterpreterException {
-        this.value=value.add(val.checkNum().getValue());
-        return this;
+        return new NumVal(value.add(val.checkNum().getValue()));
     }
 
     @Override
     public Val module(Val val) throws InterpreterException {
-        this.value=value.remainder(val.checkNum().getValue());
-        return this;
+        return new NumVal(value.remainder(val.checkNum().getValue()));
     }
 
     @Override
     public Val star(Val val) throws InterpreterException {
-        this.value=value.multiply(val.checkNum().getValue());
-        return this;
+        return new NumVal(value.multiply(val.checkNum().getValue()));
     }
 
     @Override
     public Val divide(Val val) throws InterpreterException {
+        NumVal numVal;
         try {
-            value = value.divide(val.checkNum().getValue());
+            numVal=new NumVal(value.divide(val.checkNum().getValue()));
         }
         catch(ArithmeticException e){
-            value=value.divide(val.checkNum().getValue(), 100, RoundingMode.HALF_EVEN);
+            numVal=new NumVal(value.divide(val.checkNum().getValue(), 100, RoundingMode.HALF_EVEN));
         }
-        return this;
+        return numVal;
     }
 
     public Val negate() {
-        value=value.negate();
-        return this;
+        return new NumVal(value.negate());
     }
 
     public Val plus() {
-        value=value.plus();
-        return this;
+        return new NumVal(value.plus());
     }
 
     @Override
     public Boolean comparison(Val val) throws InterpreterException {
        return this.value.compareTo(val.checkNum().value)==0;
+    }
+
+    @Override
+    public Boolean difference(Val val) throws InterpreterException {
+        return this.value.compareTo(val.checkNum().value)!=0;
     }
 }

@@ -29,7 +29,8 @@ public class SetVarExpr extends Expr {
                 return env.add(id, env.get(id).star(value.eval(env)));
             case DIVISION_EQUALS:
                 return env.add(id, env.get(id).divide(value.eval(env)));
+            default:
+                throw new InterpreterException("The operation " + op + " is not valid");
         }
-        return NilVal.instance();
     }
 }
