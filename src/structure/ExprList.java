@@ -14,14 +14,14 @@ public class ExprList {
     }
 
     List<Val> eval(Env env) throws InterpreterException {
-        List<Val> list=new ArrayList<>();
-        for(int i=0; i<exprs.size(); i++){
+        List<Val> list = new ArrayList<>();
+        for (int i = 0; i < exprs.size(); i++) {
             list.add(exprs.get(i).eval(env));
         }
         return list;
     }
 
-    public List<Expr> getExprs(){
+    public List<Expr> getExprs() {
         return exprs;
     }
 }

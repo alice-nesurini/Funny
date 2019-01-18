@@ -61,24 +61,6 @@ class FrameTest{
     }
 
     @Test
-    void get0() {
-        // get null id
-        List<String> params=Arrays.asList("var", "id");
-        List<Val> argVals=Arrays.asList(mock(Val.class), mock(Val.class));
-        Frame frame=new Frame(params, new ArrayList<>(), argVals);
-        assertThrows(IllegalArgumentException.class, ()->frame.get(null));
-    }
-
-    @Test
-    void get1() {
-        // get empty id
-        List<String> params=Arrays.asList("var", "id");
-        List<Val> argVals=Arrays.asList(mock(Val.class), mock(Val.class));
-        Frame frame=new Frame(params, new ArrayList<>(), argVals);
-        assertThrows(IllegalArgumentException.class, ()->frame.get(""));
-    }
-
-    @Test
     void get2() {
         // id not in the list (should never happen...)
         List<String> params=Arrays.asList("var", "id");

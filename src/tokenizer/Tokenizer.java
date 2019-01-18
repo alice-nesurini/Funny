@@ -306,11 +306,11 @@ public class Tokenizer {
     private void skipAllComment(int nClose) throws IOException {
         reader.mark(2);
         // if is a comment
-        if ((currentChar=reader.read()) == '/' ) {
-            if((currentChar=reader.read()) == '*') {
+        if ((currentChar = reader.read()) == '/') {
+            if ((currentChar = reader.read()) == '*') {
                 // multiline comment
                 System.out.println("Read : " + (char) currentChar);
-                while(true) {
+                while (true) {
                     while ((currentChar = reader.read()) != '*') {
                         //System.out.println("Read : " + (char)currentChar);
                     }
@@ -320,15 +320,14 @@ public class Tokenizer {
                         skipSpaces();
                         skipAllComment(++nClose);
                         break;
-                    }
-                    else{
+                    } else {
                         continue;
                     }
                 }
-            }
-            else if(currentChar=='/'){
+            } else if (currentChar == '/') {
                 // inline comment skip all line
-                while((currentChar = reader.read()) != '\n'){}
+                while ((currentChar = reader.read()) != '\n') {
+                }
                 skipAllComment(nClose);
 
             }

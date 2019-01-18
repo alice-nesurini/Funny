@@ -21,12 +21,12 @@ public class ClosureVal extends Val {
     }
 
     @Override
-    public Val add(Val val){
+    public Val add(Val val) {
         return NilVal.instance();
     }
 
     @Override
-    public ClosureVal checkClosure(){
+    public ClosureVal checkClosure() {
         return this;
     }
 }

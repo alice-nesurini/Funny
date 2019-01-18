@@ -1,6 +1,6 @@
 package tokenizer;
 
-public enum TokenType{
+public enum TokenType {
     NIL,
     FALSE,
     TRUE,

@@ -684,8 +684,6 @@ public class TokenTest{
         final Tokenizer tokenizer=new Tokenizer(new StringReader("" +
                 "/* c1 */\n" +
                 "/* c2 */\n" +
-                "/* c3 */\n" +
-                "/* c4 */\n" +
                 "{->}"));
         assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
         assertEquals(TokenType.ARROW, tokenizer.next().getType());

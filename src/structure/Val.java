@@ -7,7 +7,7 @@ public abstract class Val extends Expr {
     }
 
     public StringVal checkString() throws InterpreterException {
-        throw new InterpreterException("Not a string, type: "+this);
+        throw new InterpreterException("Not a string");
     }
 
     public NumVal checkNum() throws InterpreterException {
@@ -43,7 +43,9 @@ public abstract class Val extends Expr {
     }
 
     public Val add(Val val) throws InterpreterException {
-        throw new InterpreterException("Not numbers Can't apply plus (+=)");
+        // implemented here to be able to
+        // concatenate str + num or bool + str ...
+        return new StringVal(this.toString() + val.toString());
     }
 
     public Val module(Val val) throws InterpreterException {
@@ -62,7 +64,7 @@ public abstract class Val extends Expr {
         throw new InterpreterException("Can't apply comparison (==)");
     }
 
-    public Boolean difference(Val eval) throws InterpreterException {
+    public Boolean difference(Val val) throws InterpreterException {
         throw new InterpreterException("Can't apply difference (!=)");
     }
 }

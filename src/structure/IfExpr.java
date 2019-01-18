@@ -1,6 +1,6 @@
 package structure;
 
-public class IfExpr extends Expr{
+public class IfExpr extends Expr {
     private final boolean invertedLogic;
     private final Expr condition;
     private final Expr ifActions;
@@ -15,23 +15,15 @@ public class IfExpr extends Expr{
 
     @Override
     public Val eval(Env env) throws InterpreterException {
-        Val ifCondition;
-        if(invertedLogic){
-            ifCondition=condition.eval(env).checkBool().negate();
-        }
-        else{
-            ifCondition=condition.eval(env).checkBool();
-        }
 
-        if(ifCondition.checkBool().toBool()){
-            // if ifActions are null
-            if(ifActions==null) {
+        // (check if not inverted logic)
+        if (!invertedLogic && condition.eval(env).checkBool().toBool()) {
+            if (ifActions == null) {
                 return NilVal.instance();
             }
             return ifActions.eval(env);
-        }
-        else{
-            if(elseActions==null){
+        } else {
+            if (elseActions == null) {
                 return NilVal.instance();
             }
             return elseActions.eval(env);

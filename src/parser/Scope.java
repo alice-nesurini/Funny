@@ -8,12 +8,12 @@ public class Scope {
     private final Scope enclosing;
 
     public Scope(List<String> ids, Scope enclosing) {
-        this.ids=ids;
+        this.ids = ids;
         this.enclosing = enclosing;
     }
 
-    public boolean contains(String id){
-        if(enclosing!=null){
+    public boolean contains(String id) {
+        if (enclosing != null) {
             return ids.contains(id) || enclosing.contains(id);
         }
         return ids.contains(id);

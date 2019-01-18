@@ -9,21 +9,8 @@ public class StringVal extends Val {
     }
 
     @Override
-    public StringVal checkString(){
+    public StringVal checkString() {
         return this;
-    }
-
-    // two string can be concatenated using '+'
-    // so the Val plus method is overriden
-    // TODO : add anche contrario in Val
-    @Override
-    public Val add(Val val) throws InterpreterException {
-        return new StringVal(this.toString()+val.checkString().toString());
-    }
-
-    @Override
-    public String toString() {
-        return string;
     }
 
     @Override
@@ -34,5 +21,10 @@ public class StringVal extends Val {
     @Override
     public Boolean difference(Val val) throws InterpreterException {
         return !this.string.equals(val.checkString().string);
+    }
+
+    @Override
+    public String toString() {
+        return string;
     }
 }

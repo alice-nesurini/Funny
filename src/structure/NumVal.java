@@ -8,7 +8,7 @@ public class NumVal extends Val {
     private final BigDecimal value;
 
     public NumVal(BigDecimal value) {
-        this.value=value;
+        this.value = value;
     }
 
     public BigDecimal getValue() {
@@ -16,13 +16,8 @@ public class NumVal extends Val {
     }
 
     @Override
-    public NumVal checkNum(){
+    public NumVal checkNum() {
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return value.toString();
     }
 
     @Override
@@ -43,7 +38,6 @@ public class NumVal extends Val {
 
     @Override
     public boolean greaterEquals(Val val) throws InterpreterException {
-        // include 0
         return value.compareTo(val.checkNum().value) == 1 || value.compareTo(val.checkNum().value) == 0;
     }
 
@@ -71,10 +65,9 @@ public class NumVal extends Val {
     public Val divide(Val val) throws InterpreterException {
         NumVal numVal;
         try {
-            numVal=new NumVal(value.divide(val.checkNum().getValue()));
-        }
-        catch(ArithmeticException e){
-            numVal=new NumVal(value.divide(val.checkNum().getValue(), 100, RoundingMode.HALF_EVEN));
+            numVal = new NumVal(value.divide(val.checkNum().getValue()));
+        } catch (ArithmeticException e) {
+            numVal = new NumVal(value.divide(val.checkNum().getValue(), 100, RoundingMode.HALF_EVEN));
         }
         return numVal;
     }
@@ -89,11 +82,16 @@ public class NumVal extends Val {
 
     @Override
     public Boolean comparison(Val val) throws InterpreterException {
-       return this.value.compareTo(val.checkNum().value)==0;
+        return this.value.compareTo(val.checkNum().value) == 0;
     }
 
     @Override
     public Boolean difference(Val val) throws InterpreterException {
-        return this.value.compareTo(val.checkNum().value)!=0;
+        return this.value.compareTo(val.checkNum().value) != 0;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

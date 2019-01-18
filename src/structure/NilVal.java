@@ -6,11 +6,12 @@ public class NilVal extends Val {
 
     private static NilVal nil;
 
-    private NilVal(){}
+    private NilVal() {
+    }
 
-    public static NilVal instance(){
-        if(nil==null){
-            nil=new NilVal();
+    public static NilVal instance() {
+        if (nil == null) {
+            nil = new NilVal();
         }
         return nil;
     }

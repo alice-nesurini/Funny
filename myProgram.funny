@@ -3,6 +3,10 @@
     if x != 0 && 1/x == 1 then
         println("ok");
     else
-        println("ko");
+        println(5+" ko");
+        println("ko "+5);
+        println("ko "+true);
+        println(false+" ko");
+        println("str0 "+"ko");
     fi
 }

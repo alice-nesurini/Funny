@@ -4,7 +4,7 @@ import tokenizer.TokenType;
 
 import java.math.RoundingMode;
 
-public class BinaryExpr extends Expr{
+public class BinaryExpr extends Expr {
 
     private final Expr left;
     private final Expr right;
@@ -18,33 +18,27 @@ public class BinaryExpr extends Expr{
 
     @Override
     public Val eval(Env env) throws InterpreterException {
-        switch (operator){
+        switch (operator) {
             case AND:
-                BoolVal leftEval=left.eval(env).checkBool();
-                if(leftEval.toBool()){
+                BoolVal leftEval = left.eval(env).checkBool();
+                if (leftEval.toBool()) {
                     // if true evalute right
                     return new BoolVal(leftEval.and(right.eval(env).checkBool()));
                 }
                 return new BoolVal(false);
             case OR:
                 // if left is true result will be true
-                leftEval=left.eval(env).checkBool();
-                if(!leftEval.toBool()){
+                leftEval = left.eval(env).checkBool();
+                if (!leftEval.toBool()) {
                     // eval the right
                     return new BoolVal(leftEval.or(right.eval(env).checkBool()));
                 }
                 return new BoolVal(true);
             case PLUS:
-                try{
+                try {
                     return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));
-                }
-                catch(InterpreterException e){
-                    try {
-                        return new StringVal((left.eval(env).checkString().add(right.eval(env).checkString())).toString());
-                    }
-                    catch(InterpreterException ex){
-                        return new StringVal((left.eval(env).checkClosure().add(right.eval(env).checkString())).toString());
-                    }
+                } catch (InterpreterException e) {
+                    return left.eval(env).add(right.eval(env));
                 }
             case MINUS:
                 return new NumVal((left.eval(env).checkNum()).getValue().subtract((right.eval(env).checkNum()).getValue()));
@@ -53,10 +47,9 @@ public class BinaryExpr extends Expr{
             case DIVISION:
                 // try exact division
                 // if exact quotient cannot be represented, ArithmeticException is thrown
-                try{
+                try {
                     return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue()));
-                }
-                catch(ArithmeticException e){
+                } catch (ArithmeticException e) {
                     return new NumVal((left.eval(env).checkNum()).getValue().divide((right.eval(env).checkNum()).getValue(), 100, RoundingMode.HALF_EVEN));
                 }
             case LESS_EQUALS:
