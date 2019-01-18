@@ -103,9 +103,14 @@ public class Tokenizer {
 
     private void skipInline() throws IOException, TokenizerException {
         reader.mark(2);
-        if ((currentChar = reader.read()) == '/') {
+        // fixed inline multiple line from if to while
+        while ((currentChar = reader.read()) == '/') {
             if ((currentChar = reader.read()) == '/') {
                 while ((currentChar = reader.read()) != '\n') {
+                    // fix or EOS found
+                    if(currentChar==-1){
+                        break;
+                    }
                     reader.mark(1);
                 }
             }
@@ -264,21 +269,17 @@ public class Tokenizer {
         reader.mark(2);
         if (reader.read() == '/' && reader.read() == '*') {
             //there is a comment
-            System.out.println("OPEN");
             numberOfComment++;
             while (numberOfComment != 0) {
                 // 2 reader.mark(1);
                 //found close comment
                 if (commentBuilder.toString().contains("*/")) {
                     numberOfComment--;
-                    System.out.println("CLOSE");
-                    System.out.println("Builder " + commentBuilder.toString());
                     commentBuilder = new StringBuilder();
                 }
                 //found open comment
                 else if (commentBuilder.toString().contains("/*")) {
                     numberOfComment++;
-                    System.out.println("OPEN int");
                     commentBuilder = new StringBuilder();
                 }
 
@@ -326,8 +327,7 @@ public class Tokenizer {
                 }
             } else if (currentChar == '/') {
                 // inline comment skip all line
-                while ((currentChar = reader.read()) != '\n') {
-                }
+                while ((currentChar = reader.read()) != '\n') {}
                 skipAllComment(nClose);
 
             }

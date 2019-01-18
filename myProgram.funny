@@ -1,3 +1,9 @@
+/* c1 */
+
+// inline
+// inline
+// inline
+
 { x ->
     x=0;
     if x != 0 && 1/x == 1 then

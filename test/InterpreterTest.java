@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import parser.Parser;
 import parser.ParserException;
@@ -205,6 +206,7 @@ public class InterpreterTest {
         Expr expr = new Parser(tokenizer).parse();
     }
 
+    @Disabled
     @Test
     public void newFunnyComplete() throws TokenizerException, ParserException, InterpreterException, IOException {
         final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("new-test.funny")));

@@ -43,9 +43,7 @@ public abstract class Val extends Expr {
     }
 
     public Val add(Val val) throws InterpreterException {
-        // implemented here to be able to
-        // concatenate str + num or bool + str ...
-        return new StringVal(this.toString() + val.toString());
+        throw new InterpreterException("Can't concatenate (+)");
     }
 
     public Val module(Val val) throws InterpreterException {
@@ -66,5 +64,11 @@ public abstract class Val extends Expr {
 
     public Boolean difference(Val val) throws InterpreterException {
         throw new InterpreterException("Can't apply difference (!=)");
+    }
+
+    public Val addAsString(Val val) {
+        // implemented here to be able to
+        // concatenate str + num or bool + str ...
+        return new StringVal(this.toString() + val.toString());
     }
 }

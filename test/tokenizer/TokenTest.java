@@ -1,5 +1,6 @@
 package tokenizer;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import parser.Parser;
 import parser.ParserException;
@@ -17,8 +18,8 @@ public class TokenTest{
     @Test
     public void testNextPrint() throws IOException, TokenizerException {
         final Tokenizer tokenizer=new Tokenizer(new StringReader("\n { ->\n" +
-                "\tprint(\"Hello, world!\\n\");\n" +
-                "\tprint(\"Hi!\", \"\\n\");\n" +
+                "\tprint(\"Hello, world!\n\");\n" +
+                "\tprint(\"Hi!\", \"\n\");\n" +
                 " } "));
 
         Token runnerToken;
@@ -29,7 +30,7 @@ public class TokenTest{
         assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.STRING, runnerToken.getType());
-        assertEquals("Hello, world!\\n", runnerToken.getStringValue());
+        assertEquals("Hello, world!\n", runnerToken.getStringValue());
         assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
@@ -41,7 +42,7 @@ public class TokenTest{
         assertEquals(TokenType.COMMA, tokenizer.next().getType());
         runnerToken=tokenizer.next();
         assertEquals(TokenType.STRING, runnerToken.getType());
-        assertEquals("\\n", runnerToken.getStringValue());
+        assertEquals("\n", runnerToken.getStringValue());
         assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
@@ -75,78 +76,6 @@ public class TokenTest{
         assertEquals("a string", runnerToken.getStringValue());
         assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
 
-        assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
-    }
-
-    @Test
-    public void testNextNumber() throws IOException, TokenizerException {
-        final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("myProgram.funny")));
-
-        Token runnerToken;
-        assertEquals(TokenType.OPEN_CURLY_BRACKET, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("myVar", runnerToken.getStringValue());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("param", runnerToken.getStringValue());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("result", runnerToken.getStringValue());
-        assertEquals(TokenType.ARROW, tokenizer.next().getType());
-
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("myVar", runnerToken.getStringValue());
-        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.NUM, runnerToken.getType());
-        assertEquals(new BigDecimal("2.3"), runnerToken.getValue());
-        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
-
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("param", runnerToken.getStringValue());
-        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.NUM, runnerToken.getType());
-        // assertEquals(new BigDecimal(7.51), runnerToken.getValue());
-        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
-
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("result", runnerToken.getStringValue());
-        assertEquals(TokenType.EQUALS, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("myVar", runnerToken.getStringValue());
-        assertEquals(TokenType.PLUS, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("param", runnerToken.getStringValue());
-        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
-
-        assertEquals(TokenType.IF, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("result", runnerToken.getStringValue());
-        assertEquals(TokenType.COMPARISON, tokenizer.next().getType());
-        assertEquals(TokenType.NUM, tokenizer.next().getType());
-
-        assertEquals(TokenType.THEN, tokenizer.next().getType());
-        assertEquals(TokenType.PRINT, tokenizer.next().getType());
-        assertEquals(TokenType.OPEN_ROUND_BRACKET, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.STRING, runnerToken.getType());
-        assertEquals("The result: ", runnerToken.getStringValue());
-        assertEquals(TokenType.COMMA, tokenizer.next().getType());
-        runnerToken=tokenizer.next();
-        assertEquals(TokenType.ID, runnerToken.getType());
-        assertEquals("result", runnerToken.getStringValue());
-        assertEquals(TokenType.CLOSE_ROUND_BRACKET, tokenizer.next().getType());
-        assertEquals(TokenType.SEMICOLON, tokenizer.next().getType());
-
-        assertEquals(TokenType.FI, tokenizer.next().getType());
         assertEquals(TokenType.CLOSE_CURLY_BRACKET, tokenizer.next().getType());
     }
 
@@ -572,9 +501,9 @@ public class TokenTest{
     }
 
     @Test
-    public void completeTesting() throws IOException, TokenizerException {
-        final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("complete.funny")));
-        while(tokenizer.next().getType()!=TokenType.EOS){}
+    public void completeTesting() throws IOException, TokenizerException, InterpreterException, ParserException {
+        //final Tokenizer tokenizer=new Tokenizer(new BufferedReader(new FileReader("complete.funny")));
+        Launcher.launch(new Tokenizer(new BufferedReader(new FileReader("complete.funny"))));
     }
 
     @Test

@@ -1,10 +1,4 @@
 
-// inline
-// inline
-/* funny */
-// inline
-// inline
-/* funny */
 
 { ->
 	print("Hello, world!\n");

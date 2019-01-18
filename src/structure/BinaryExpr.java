@@ -38,7 +38,7 @@ public class BinaryExpr extends Expr {
                 try {
                     return new NumVal((left.eval(env).checkNum()).getValue().add((right.eval(env).checkNum()).getValue()));
                 } catch (InterpreterException e) {
-                    return left.eval(env).add(right.eval(env));
+                    return left.eval(env).addAsString(right.eval(env));
                 }
             case MINUS:
                 return new NumVal((left.eval(env).checkNum()).getValue().subtract((right.eval(env).checkNum()).getValue()));
